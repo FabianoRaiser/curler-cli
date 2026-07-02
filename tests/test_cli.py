@@ -32,7 +32,9 @@ class CliTest(unittest.TestCase):
             ),
         ):
             output = StringIO()
-            code = curler.cli.main(["--headers", "example.com"], output=output, error=StringIO())
+            code = curler.cli.main(
+                ["--headers", "example.com"], output=output, error=StringIO()
+            )
 
         self.assertEqual(code, 0)
         self.assertEqual(output.getvalue(), "HTTP/2 200\n\n")
@@ -47,11 +49,12 @@ class CliTest(unittest.TestCase):
             ),
         ):
             output = StringIO()
-            code = curler.cli.main(["--include-headers", "example.com"], output=output, error=StringIO())
+            code = curler.cli.main(
+                ["--include-headers", "example.com"], output=output, error=StringIO()
+            )
 
         self.assertEqual(code, 0)
         self.assertEqual(output.getvalue(), "HTTP/2 200\n\n<html>Hello</html>")
-
 
     def test_pretty_mode_prints_formatted_body(self):
         with patch(
@@ -63,16 +66,14 @@ class CliTest(unittest.TestCase):
             ),
         ):
             output = StringIO()
-            code = curler.cli.main(["--pretty", "example.com"], output=output, error=StringIO())
+            code = curler.cli.main(
+                ["--pretty", "example.com"], output=output, error=StringIO()
+            )
 
         self.assertEqual(code, 0)
         self.assertEqual(
             output.getvalue(),
-            "<html>\n"
-            "  <body>\n"
-            "    Hello\n"
-            "  </body>\n"
-            "</html>\n",
+            "<html>\n  <body>\n    Hello\n  </body>\n</html>\n",
         )
 
     def test_direct_mode_reports_invalid_url(self):

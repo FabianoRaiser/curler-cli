@@ -13,12 +13,16 @@ class ReplTest(unittest.TestCase):
             return next(commands)
 
         def fake_fetch(url):
-            return FetchResult(url=url, headers="HTTP/2 200\n\n", body="<html>Hello</html>")
+            return FetchResult(
+                url=url, headers="HTTP/2 200\n\n", body="<html>Hello</html>"
+            )
 
         output = StringIO()
         error = StringIO()
 
-        code = run_repl(input_func=fake_input, output=output, error=error, fetch_func=fake_fetch)
+        code = run_repl(
+            input_func=fake_input, output=output, error=error, fetch_func=fake_fetch
+        )
 
         self.assertEqual(code, 0)
         self.assertEqual(
@@ -30,7 +34,6 @@ class ReplTest(unittest.TestCase):
         )
         self.assertEqual(error.getvalue(), "")
 
-
     def test_repl_pretty_reprints_formatted_response(self):
         commands = iter(["example.com", "pretty", "quit"])
 
@@ -38,12 +41,18 @@ class ReplTest(unittest.TestCase):
             return next(commands)
 
         def fake_fetch(url):
-            return FetchResult(url=url, headers="HTTP/2 200\n\n", body="<html><body>Hello</body></html>")
+            return FetchResult(
+                url=url,
+                headers="HTTP/2 200\n\n",
+                body="<html><body>Hello</body></html>",
+            )
 
         output = StringIO()
         error = StringIO()
 
-        code = run_repl(input_func=fake_input, output=output, error=error, fetch_func=fake_fetch)
+        code = run_repl(
+            input_func=fake_input, output=output, error=error, fetch_func=fake_fetch
+        )
 
         self.assertEqual(code, 0)
         self.assertEqual(

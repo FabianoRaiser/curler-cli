@@ -28,10 +28,7 @@ class FormatterTest(unittest.TestCase):
 
         self.assertEqual(
             format_html(html, width=14),
-            "<p>\n"
-            "  one two three four\n"
-            "  five six\n"
-            "</p>\n",
+            "<p>\n  one two three four\n  five six\n</p>\n",
         )
 
 

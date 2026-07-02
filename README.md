@@ -1,20 +1,27 @@
 # Curler Manuscript
 
+![CI](https://github.com/FabianoRaiser/curler-cli/actions/workflows/ci.yml/badge.svg)
+
 Curler Manuscript is the first edition of Curler: a tiny command-line browser backed by the system `curl`. It fetches a URL, follows redirects, and prints the raw HTML exactly as the server returned it.
 
-No JavaScript. No HTML parser. No pretty output. Just the document.
+No JavaScript. No HTML parser. No headless browser. Just the document.
 
 ## Requirements
 
 - Python 3.10+
 - `curl` installed and available on `PATH`
-- `pip`
 
 ## Install
 
+Create a virtual environment (recommended on Debian/Ubuntu to avoid PEP 668 errors):
+
 ```bash
+python3 -m venv .venv
+source .venv/bin/activate
 pip install -e .
 ```
+
+If you rename or move the project folder, recreate `.venv` from scratch — virtualenv paths are not portable.
 
 ## Use
 
@@ -31,7 +38,7 @@ Print only response headers:
 curler --headers example.com
 ```
 
-Print response headers followed by the raw body:
+Print response headers followed by the body:
 
 ```bash
 curler --include-headers example.com
@@ -75,11 +82,26 @@ After installing locally, run:
 ```bash
 curler example.com
 curler --headers example.com
+curler --pretty example.com
 curler
 ```
 
 In the REPL, enter a URL such as `example.com`, then run `headers`, `raw`, `pretty`, and `quit`.
 
+## Development
+
+Install dev tools inside your virtualenv:
+
+```bash
+pip install pre-commit ruff
+pre-commit install
+pre-commit run --all-files
+```
+
+## Roadmap
+
+**Paperback** (next edition) will parse HTML into readable text, numbered links, and REPL navigation (`links`, `go`, `back`, `forward`). See [`docs/curler-guide.md`](docs/curler-guide.md) for the full edition roadmap.
+
 ## Limitations
 
-Manuscript does not execute JavaScript, extract links, keep navigation history, submit forms, send custom headers, or save responses to files. The `--pretty` view only reindents the markup for reading; it does not interpret the page like Paperback will. Those belong to later Curler editions.
+Manuscript does not execute JavaScript, parse HTML into readable text, extract or follow links, keep navigation history, submit forms, send custom headers, or save responses to files. The `--pretty` flag only reindents the markup for reading; it does not interpret the page. Those capabilities belong to later Curler editions.

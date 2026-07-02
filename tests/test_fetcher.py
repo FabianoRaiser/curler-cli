@@ -72,7 +72,9 @@ class FetcherTest(unittest.TestCase):
                 }
             ],
         )
-        self.assertEqual(result.headers, "HTTP/2 200\r\nContent-Type: text/html\r\n\r\n")
+        self.assertEqual(
+            result.headers, "HTTP/2 200\r\nContent-Type: text/html\r\n\r\n"
+        )
         self.assertEqual(result.body, "<body>Hello</body>")
 
     def test_fetch_raises_when_curl_is_missing(self):
@@ -81,7 +83,9 @@ class FetcherTest(unittest.TestCase):
                 fetch("https://example.com")
 
     def test_fetch_raises_when_curl_fails(self):
-        completed = SimpleNamespace(returncode=6, stdout=b"", stderr=b"Could not resolve host")
+        completed = SimpleNamespace(
+            returncode=6, stdout=b"", stderr=b"Could not resolve host"
+        )
         with patch("curler.fetcher.shutil.which", return_value="/usr/bin/curl"):
             with patch("curler.fetcher.subprocess.run", return_value=completed):
                 with self.assertRaisesRegex(FetchError, "Could not resolve host"):

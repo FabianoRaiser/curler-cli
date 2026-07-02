@@ -46,7 +46,9 @@ class PrettyHTMLFormatter(HTMLParser):
             self.level += 1
 
     def handle_startendtag(self, tag: str, attrs: list[tuple[str, str | None]]) -> None:
-        self._emit(self.get_starttag_text() or f"{self._render_start_tag(tag, attrs)[:-1]} />")
+        self._emit(
+            self.get_starttag_text() or f"{self._render_start_tag(tag, attrs)[:-1]} />"
+        )
 
     def handle_endtag(self, tag: str) -> None:
         self.level = max(0, self.level - 1)

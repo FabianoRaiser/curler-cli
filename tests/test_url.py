@@ -9,7 +9,9 @@ class NormalizeUrlTest(unittest.TestCase):
 
     def test_preserves_http_and_https_urls(self):
         self.assertEqual(normalize_url("http://example.com"), "http://example.com")
-        self.assertEqual(normalize_url("https://example.com/docs"), "https://example.com/docs")
+        self.assertEqual(
+            normalize_url("https://example.com/docs"), "https://example.com/docs"
+        )
 
     def test_rejects_invalid_urls(self):
         for value in ["", "   ", "ftp://example.com", "https:///missing-host"]:
