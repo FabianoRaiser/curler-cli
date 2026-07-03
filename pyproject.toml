@@ -12,6 +12,7 @@ authors = [
     { name = "Curler contributors" }
 ]
 dependencies = []
+dev = ["pre-commit","ruff", "build"]
 
 [project.scripts]
 curler = "curler.cli:main"
