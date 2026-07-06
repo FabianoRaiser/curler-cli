@@ -2,9 +2,9 @@
 
 > *"Because the web had words before it had JavaScript."*
 
-O Curler é um navegador CLI construído em cima do `curl`. Sem GPU, sem engine JavaScript, sem 300MB de Chromium — só uma conexão TCP, um parser de HTML e a audácia de chamar isso de navegador. A web moderna empilhou camadas de teatro sobre o que é, no fundo, um sistema de entrega de documentos. O Curler arranca esse teatro e te mostra o roteiro.
+O Curler é um navegador CLI construído em cima do `curl`. Sem GPU, sem engine JavaScript, sem 300MB de Chromium — só uma conexão TCP, um parser de HTML e a audácia de chamar isso de navegador.
 
-O projeto vem em quatro edições que seguem essa metáfora sem vergonha. O **Manuscript** te entrega o HTML cru exatamente como o servidor escreveu — sem interpretação, sem piedade. O **Paperback** parseia essa marcação e te devolve algo legível: título, texto, links. O **Stagecraft** sobe um browser headless, monta o palco sem plateia e deixa o JavaScript rodar o suficiente pra popular a página. O **Blockbuster** vai de Selenium completo — o cinema inteiro, alugado, pra um único request. Cada edição é uma troca deliberada entre peso e compatibilidade, e uma aula sobre quanta infraestrutura a web moderna silenciosamente exige de você.
+O projeto vem em quatro edições. O **Manuscript** entrega HTML cru. O **Paperback** (v0.2 — **atual**) parseia a marcação em páginas legíveis com navegação no REPL. O **Stagecraft** e o **Blockbuster** são edições futuras com browser headless.
 
 ---
 
@@ -19,34 +19,76 @@ O projeto vem em quatro edições que seguem essa metáfora sem vergonha. O **Ma
 
 ---
 
-## Arquitetura (Paperback)
+## Arquitetura (Paperback v0.2)
 
 ```
 [ Input do usuário ]
         │
         ▼
-[ URL Parser ]          → normaliza, adiciona https://, valida
+[ url.py ]              → normaliza, adiciona https://, valida
         │
         ▼
-[ curl subprocess ]     → faz o request, captura headers + body
-        │
-        ▼
-[ Response Inspector ]  → lê status code, content-type, redirects
+[ fetcher.py ]          → curl -L, charset, headers + body
         │
       ┌─┴──────────────────────┐
       ▼                        ▼
-[ HTML Parser ]          [ Raw mode ]
-  BeautifulSoup            exibe como texto
+[ parser.py ]            [ --raw / --pretty ]
+  BeautifulSoup            formatter.py (HTML indentado)
       │
       ▼
-[ Renderer ]             → título, texto limpo, links numerados
+[ renderer.py + style.py ] → título, texto, refs [n], cores ANSI
         │
         ▼
-[ History Manager ]      → pilha back / stack forward
+[ history.py ]          → pilha back / forward (REPL)
         │
         ▼
-[ REPL ]                 → loop interativo aguarda próximo comando
+[ repl.py / cli.py ]
 ```
+
+---
+
+## Saída parseada (default)
+
+Exemplo de página renderizada:
+
+```text
+Example Site
+
+# Getting Started
+
+Read the Docs [1] or visit our Blog [2].
+
+- Item one
+- Item two
+
+1. First step
+2. Second step
+
+(2 links — use links)
+```
+
+- **Título** da tag `<title>` no topo
+- **Headings** com `#`, `##`, … conforme h1–h6
+- **Links inline** `[n]` ao lado do texto âncora
+- **Listas** com `-` (ul) e `1.` (ol)
+- **Rodapé** com contagem de links; no REPL inclui dica `use links`
+- **Cores ANSI** em terminal (links azuis, headings destacados); desligadas com `--no-color`, `NO_COLOR` ou pipe
+- **`links`** no REPL lista URLs completas
+
+Modo Manuscript: `curler --raw URL` ou `pretty` no REPL.
+
+---
+
+## Flags CLI
+
+| Flag | Efeito |
+|---|---|
+| *(default)* | Saída parseada |
+| `--raw` | HTML bruto |
+| `--pretty` | HTML indentado |
+| `--no-color` | Sem cores ANSI |
+| `--headers` | Só response headers |
+| `--include-headers` | Headers + body |
 
 ---
 
@@ -55,79 +97,75 @@ O projeto vem em quatro edições que seguem essa metáfora sem vergonha. O **Ma
 | Comando | O que faz |
 |---|---|
 | `<url>` | Navega para a URL |
+| `links` | Lista links numerados com URLs |
+| `go <n>` | Segue o link N |
 | `back` | Volta no histórico |
 | `forward` | Avança no histórico |
-| `links` | Lista todos os links da página atual |
-| `go <n>` | Segue o link de número N |
-| `raw` | Mostra o HTML bruto da página atual |
-| `headers` | Mostra os response headers |
-| `help` | Lista os comandos disponíveis |
-| `quit` | Encerra o Curler |
+| `raw` | HTML bruto da página atual |
+| `pretty` | HTML indentado da página atual |
+| `headers` | Response headers |
+| `help` | Ajuda |
+| `quit` / `exit` | Sair |
 
 ---
 
-## Pré-requisitos
-
-- Python 3.10+
-- curl instalado no sistema (`which curl`)
-- pip
-
----
-
-## Instalação (Paperback)
+## Instalação
 
 ```bash
-# Clone o repositório
-git clone https://github.com/seu-usuario/curler.git
-cd curler
-
-# Instale as dependências Python
-pip install beautifulsoup4 lxml
-
-# Torne o script executável
-chmod +x curler.py
-
-# Execute
-python curler.py
+git clone https://github.com/FabianoRaiser/curler-cli.git
+cd curler-cli
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -e .
+curler --version   # curler 0.2.2
 ```
 
 ---
 
-## Estrutura de arquivos sugerida
+## Estrutura do repositório
 
 ```
 curler/
-├── curler.py          # Entry point — REPL principal
-├── fetcher.py         # Wrapper do curl (subprocess)
-├── parser.py          # HTML → estrutura legível (BeautifulSoup)
-├── renderer.py        # Formata e imprime no terminal
-├── history.py         # Gerencia pilha de navegação
-└── README.md
+├── cli.py           # Entry point CLI
+├── fetcher.py       # curl subprocess + charset
+├── parser.py        # HTML → ParsedPage
+├── renderer.py      # format_body, render_page
+├── style.py         # ANSI Stylizer
+├── history.py       # back/forward
+├── formatter.py     # --pretty (Manuscript)
+├── repl.py          # REPL interativo
+└── url.py           # normalize_url
+tests/
+├── fixtures/        # HTML de exemplo
+├── test_parser.py
+├── test_integration.py  # HTTP local + curl real
+└── ...
 ```
 
 ---
 
 ## Decisões de design
 
-### Sites que vão quebrar
-O Curler funciona bem em sites com **server-side rendering**: Wikipedia, blogs, portais de notícia, documentação, GitHub. Em SPAs (React, Angular, Vue), o HTML retornado costuma ser um `<div id="root"></div>` vazio — o Curler detecta isso e avisa o usuário.
+### Sites que funcionam bem
+Wikipedia, blogs, documentação, portais com **server-side rendering**.
 
-### Por que não Selenium ou Playwright no Paperback?
-- Selenium: 4 processos se comunicando em rede só pra ler texto. É alugar um ônibus pra ir sozinho na padaria.
-- Playwright headless: ~300MB de Chromium pra servir como estenógrafo de um palco que ninguém vai ver.
-- O Curler Paperback é uma lambreta. A leveza é uma feature, não uma limitação.
+### SPAs e Framer
+SPAs (React/Vue) costumam retornar `<div id="root"></div>` vazio — o Curler avisa. Sites **Framer** podem ter HTML verboso e texto duplicado; comentários SSR (`<!--$-->`) são ignorados desde v0.2.
 
 ### Redirects
-O curl segue redirects automaticamente com a flag `-L`. O Curler registra cada URL visitada no histórico, incluindo a URL final após redirecionamentos.
+O curl segue redirects com `-L`. O histórico REPL guarda cada página visitada com body cacheado.
+
+### Charset
+O fetcher detecta charset em `Content-Type` e `<meta charset>`, com fallback UTF-8 → Latin-1.
 
 ---
 
 ## Roadmap
 
-- [x] **Manuscript** — curl puro, output HTML bruto
-- [ ] **Paperback** — parser + abstração legível + REPL + histórico
+- [x] **Manuscript** v0.1 — curl puro, HTML bruto
+- [x] **Paperback** v0.2 — parser, renderer, REPL, histórico, cores
 - [ ] Suporte a `POST` com body customizado
 - [ ] Headers customizados (`-H`)
-- [ ] Salvar resposta em arquivo (`save <filename>`)
-- [ ] **Stagecraft** — integração com Playwright headless
-- [ ] **Blockbuster** — integração com Selenium
+- [ ] Salvar resposta (`save <filename>`)
+- [ ] **Stagecraft** — Playwright headless
+- [ ] **Blockbuster** — Selenium

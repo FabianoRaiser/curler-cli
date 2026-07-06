@@ -8,7 +8,8 @@ alwaysApply: false
 
 - `build_parser()` define flags; `main()` orquestra fetch + output
 - Valide combinações incompatíveis de flags antes do fetch (ex.: `--headers` + `--pretty`)
+- CLI default: saída parseada; `--raw` HTML cru; `--no-color` desliga ANSI
 - REPL injeta `fetch_func` e `input_func` para testabilidade
-- Comandos REPL: url, headers, raw, pretty, help, quit/exit
+- Comandos REPL: url, links, go, back, forward, headers, raw, pretty, help, quit/exit
 - Erros de domínio → `curler: {mensagem}` em stderr, continue no REPL / exit 1 no CLI
-- Nova flag → `cli.py` + `tests/test_cli.py` + README.md
+- Nova flag ou comando → testes + README.md

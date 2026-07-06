@@ -1,13 +1,13 @@
 ---
-description: Convenções gerais do Curler Manuscript
+description: Convenções gerais do Curler Paperback
 alwaysApply: true
 ---
 
-# Curler Manuscript
+# Curler Paperback
 
-- Edição Manuscript: stdlib only, sem deps Python externas
-- I/O `curl` apenas em `fetcher.py`; validação de URL em `url.py`
-- `FetchResult` é frozen dataclass; erros tipados (`UrlError`, `FetchError`)
-- Testes com `unittest` + mock — nunca requisições de rede reais
-- Paperback (parser, histórico) é escopo futuro — não misturar com Manuscript
+- Edição Paperback: `beautifulsoup4` + `lxml` em `pyproject.toml`
+- I/O `curl` apenas em `fetcher.py`; parse em `parser.py`; render em `renderer.py` + `style.py`
+- `FetchResult` / `ParsedPage` são frozen dataclasses; erros tipados (`UrlError`, `FetchError`)
+- Testes com `unittest` + mock; integração HTTP local só em `test_integration.py`
+- Modo Manuscript disponível via `--raw` / `--pretty` (HTML cru)
 - Antes de finalizar: `python -m unittest discover -s tests` e `ruff check .`

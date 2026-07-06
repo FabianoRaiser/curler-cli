@@ -1,14 +1,15 @@
-"""Command line interface for Curler Manuscript."""
+"""Command line interface for Curler Paperback."""
 
 from __future__ import annotations
 
 import argparse
 import sys
-from typing import Sequence, TextIO
+from collections.abc import Sequence
+from typing import TextIO
 
 from . import __version__
 from .fetcher import FetchError, fetch
-from .formatter import format_html
+from .renderer import format_body
 from .repl import run_repl
 from .url import UrlError, normalize_url
 
@@ -16,7 +17,7 @@ from .url import UrlError, normalize_url
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         prog="curler",
-        description="Curler Manuscript: fetch a URL with curl and print raw HTML.",
+        description="Curler Paperback: fetch a URL with curl and print a readable page.",
     )
     parser.add_argument("url", nargs="?", help="URL to fetch")
     parser.add_argument(
@@ -30,9 +31,19 @@ def build_parser() -> argparse.ArgumentParser:
         help="print response headers followed by the body",
     )
     parser.add_argument(
+        "--raw",
+        action="store_true",
+        help="print the raw HTML body instead of a parsed readable page",
+    )
+    parser.add_argument(
         "--pretty",
         action="store_true",
         help="print the response body with readable HTML indentation",
+    )
+    parser.add_argument(
+        "--no-color",
+        action="store_true",
+        help="disable ANSI colors in parsed output",
     )
     parser.add_argument(
         "--version",
@@ -66,7 +77,13 @@ def main(
         print(f"curler: {exc}", file=error)
         return 1
 
-    body = format_html(result.body) if args.pretty else result.body
+    body = format_body(
+        result,
+        raw=args.raw,
+        pretty=args.pretty,
+        color=False if args.no_color else None,
+        output=output,
+    )
 
     if args.headers:
         print(result.headers, end="", file=output)

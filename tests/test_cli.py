@@ -5,22 +5,42 @@ from unittest.mock import patch
 import curler.cli
 from curler.fetcher import FetchResult
 
+SIMPLE_HTML = "<html><body>Hello</body></html>"
+NESTED_HTML = "<html><body>Hello</body></html>"
+
 
 class CliTest(unittest.TestCase):
-    def test_direct_mode_prints_body(self):
+    def test_direct_mode_prints_parsed_body(self):
         with patch(
             "curler.cli.fetch",
             return_value=FetchResult(
                 url="https://example.com",
                 headers="HTTP/2 200\n\n",
-                body="<html>Hello</html>",
+                body=SIMPLE_HTML,
             ),
         ):
             output = StringIO()
             code = curler.cli.main(["example.com"], output=output, error=StringIO())
 
         self.assertEqual(code, 0)
-        self.assertEqual(output.getvalue(), "<html>Hello</html>")
+        self.assertEqual(output.getvalue(), "Hello\n")
+
+    def test_raw_mode_prints_html_body(self):
+        with patch(
+            "curler.cli.fetch",
+            return_value=FetchResult(
+                url="https://example.com",
+                headers="HTTP/2 200\n\n",
+                body=SIMPLE_HTML,
+            ),
+        ):
+            output = StringIO()
+            code = curler.cli.main(
+                ["--raw", "example.com"], output=output, error=StringIO()
+            )
+
+        self.assertEqual(code, 0)
+        self.assertEqual(output.getvalue(), SIMPLE_HTML)
 
     def test_headers_mode_prints_headers(self):
         with patch(
@@ -28,7 +48,7 @@ class CliTest(unittest.TestCase):
             return_value=FetchResult(
                 url="https://example.com",
                 headers="HTTP/2 200\n\n",
-                body="<html>Hello</html>",
+                body=SIMPLE_HTML,
             ),
         ):
             output = StringIO()
@@ -45,7 +65,7 @@ class CliTest(unittest.TestCase):
             return_value=FetchResult(
                 url="https://example.com",
                 headers="HTTP/2 200\n\n",
-                body="<html>Hello</html>",
+                body=SIMPLE_HTML,
             ),
         ):
             output = StringIO()
@@ -54,7 +74,7 @@ class CliTest(unittest.TestCase):
             )
 
         self.assertEqual(code, 0)
-        self.assertEqual(output.getvalue(), "HTTP/2 200\n\n<html>Hello</html>")
+        self.assertEqual(output.getvalue(), "HTTP/2 200\n\nHello\n")
 
     def test_pretty_mode_prints_formatted_body(self):
         with patch(
@@ -62,7 +82,7 @@ class CliTest(unittest.TestCase):
             return_value=FetchResult(
                 url="https://example.com",
                 headers="HTTP/2 200\n\n",
-                body="<html><body>Hello</body></html>",
+                body=NESTED_HTML,
             ),
         ):
             output = StringIO()
@@ -75,6 +95,24 @@ class CliTest(unittest.TestCase):
             output.getvalue(),
             "<html>\n  <body>\n    Hello\n  </body>\n</html>\n",
         )
+
+    def test_no_color_disables_ansi_in_parsed_output(self):
+        with patch(
+            "curler.cli.fetch",
+            return_value=FetchResult(
+                url="https://example.com",
+                headers="HTTP/2 200\n\n",
+                body='<html><body><a href="/x">Link</a></body></html>',
+            ),
+        ):
+            output = StringIO()
+            code = curler.cli.main(
+                ["--no-color", "example.com"], output=output, error=StringIO()
+            )
+
+        self.assertEqual(code, 0)
+        self.assertNotIn("\033[", output.getvalue())
+        self.assertIn("Link [1]", output.getvalue())
 
     def test_direct_mode_reports_invalid_url(self):
         error = StringIO()

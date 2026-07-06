@@ -33,13 +33,47 @@ class FetcherTest(unittest.TestCase):
         self.assertEqual(headers, "HTTP/2 200\r\nContent-Type: text/html\r\n\r\n")
         self.assertEqual(body, "<html>ok</html>")
 
-    def test_split_headers_and_body_replaces_invalid_utf8_body_bytes(self):
-        output = b"HTTP/2 200\r\nContent-Type: text/html\r\n\r\n<html>caf\xe7</html>"
+    def test_split_headers_and_body_decodes_latin1_from_content_type(self):
+        output = (
+            b"HTTP/2 200\r\nContent-Type: text/html; charset=ISO-8859-1\r\n\r\n"
+            b"<html>caf\xe9</html>"
+        )
+
+        headers, body = split_headers_and_body(output)
+
+        self.assertEqual(
+            headers,
+            "HTTP/2 200\r\nContent-Type: text/html; charset=ISO-8859-1\r\n\r\n",
+        )
+        self.assertEqual(body, "<html>café</html>")
+
+    def test_split_headers_and_body_decodes_utf8(self):
+        output = (
+            b"HTTP/2 200\r\nContent-Type: text/html; charset=utf-8\r\n\r\n"
+            b"<html>caf\xc3\xa9</html>"
+        )
+
+        headers, body = split_headers_and_body(output)
+
+        self.assertEqual(body, "<html>café</html>")
+
+    def test_split_headers_and_body_falls_back_to_latin1_for_invalid_utf8(self):
+        output = b"HTTP/2 200\r\nContent-Type: text/html\r\n\r\n<html>avan\xe7ada</html>"
 
         headers, body = split_headers_and_body(output)
 
         self.assertEqual(headers, "HTTP/2 200\r\nContent-Type: text/html\r\n\r\n")
-        self.assertEqual(body, "<html>caf�</html>")
+        self.assertEqual(body, "<html>avançada</html>")
+
+    def test_charset_from_html_meta(self):
+        output = (
+            b"HTTP/2 200\r\nContent-Type: text/html\r\n\r\n"
+            b'<html><head><meta charset="ISO-8859-1"></head>Solu\xe7\xf5es</html>'
+        )
+
+        _, body = split_headers_and_body(output)
+
+        self.assertEqual(body, '<html><head><meta charset="ISO-8859-1"></head>Soluções</html>')
 
     def test_fetch_runs_curl_and_returns_result(self):
         calls = []
