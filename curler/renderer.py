@@ -2,7 +2,9 @@
 
 from __future__ import annotations
 
-from .parser import ParsedPage
+from .fetcher import FetchResult
+from .formatter import format_html
+from .parser import ParsedPage, parse_html
 
 SPA_WARNING = (
     "This page looks like a JavaScript SPA with little server-rendered content. "
@@ -32,3 +34,12 @@ def render_page(page: ParsedPage) -> str:
         return ""
 
     return "\n".join(lines).rstrip() + "\n"
+
+
+def format_body(result: FetchResult, *, raw: bool = False, pretty: bool = False) -> str:
+    """Choose parsed, raw, or pretty-printed output for a fetch result."""
+    if pretty:
+        return format_html(result.body)
+    if raw:
+        return result.body
+    return render_page(parse_html(result.body, base_url=result.url))

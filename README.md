@@ -1,10 +1,10 @@
-# Curler Manuscript
+# Curler Paperback
 
 [![CI](https://github.com/FabianoRaiser/curler-cli/actions/workflows/ci.yml/badge.svg)](https://github.com/FabianoRaiser/curler-cli/actions/workflows/ci.yml)
 
-Curler Manuscript is the first edition of Curler: a tiny command-line browser backed by the system `curl`. It fetches a URL, follows redirects, and prints the raw HTML exactly as the server returned it.
+Curler Paperback is the second edition of Curler: a command-line browser backed by the system `curl`. It fetches a URL, follows redirects, parses the HTML, and prints a readable page with title, text, and numbered links.
 
-No JavaScript. No HTML parser. No headless browser. Just the document.
+No JavaScript. No headless browser. Just the document — interpreted enough to read and navigate.
 
 ## Requirements
 
@@ -51,11 +51,17 @@ pip install -e ".[dev]"
 
 ## Use
 
-Fetch a page and print the raw body:
+Fetch a page and print a readable parsed view (default):
 
 ```bash
 curler example.com
 curler https://example.com
+```
+
+Print the raw HTML body (Manuscript-style):
+
+```bash
+curler --raw example.com
 ```
 
 Print only response headers:
@@ -76,7 +82,7 @@ Print the body with readable HTML indentation:
 curler --pretty example.com
 ```
 
-Start the interactive Manuscript shell:
+Start the interactive Paperback shell:
 
 ```bash
 curler
@@ -86,6 +92,10 @@ Inside the REPL:
 
 ```text
 curler> example.com
+curler> links
+curler> go 1
+curler> back
+curler> forward
 curler> headers
 curler> raw
 curler> pretty
@@ -107,12 +117,13 @@ After installing locally, run:
 
 ```bash
 curler example.com
+curler --raw example.com
 curler --headers example.com
 curler --pretty example.com
 curler
 ```
 
-In the REPL, enter a URL such as `example.com`, then run `headers`, `raw`, `pretty`, and `quit`.
+In the REPL, enter a URL such as `example.com`, then run `links`, `go 1`, `back`, `headers`, `raw`, and `quit`.
 
 ## Development
 
@@ -144,8 +155,8 @@ On tag push, the [release workflow](.github/workflows/release.yml) runs git-clif
 
 ## Roadmap
 
-**Paperback** (next edition) will parse HTML into readable text, numbered links, and REPL navigation (`links`, `go`, `back`, `forward`). See [`docs/curler-guide.md`](docs/curler-guide.md) for the full edition roadmap.
+**Stagecraft** (next edition) will add headless browser rendering for JavaScript-heavy pages. See [`docs/curler-guide.md`](docs/curler-guide.md) for the full edition roadmap.
 
 ## Limitations
 
-Manuscript does not execute JavaScript, parse HTML into readable text, extract or follow links, keep navigation history, submit forms, send custom headers, or save responses to files. The `--pretty` flag only reindents the markup for reading; it does not interpret the page. Those capabilities belong to later Curler editions.
+Paperback does not execute JavaScript. Single-page apps often return an empty shell — Curler detects this and warns you. It does not submit forms, send custom headers, or save responses to files. Those capabilities belong to later Curler editions.

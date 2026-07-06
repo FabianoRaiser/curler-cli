@@ -1,7 +1,8 @@
 import unittest
 
+from curler.fetcher import FetchResult
 from curler.parser import ParsedLink, ParsedPage
-from curler.renderer import SPA_WARNING, render_page
+from curler.renderer import SPA_WARNING, format_body, render_page
 
 
 class RenderPageTest(unittest.TestCase):
@@ -28,6 +29,21 @@ class RenderPageTest(unittest.TestCase):
         output = render_page(page)
 
         self.assertIn(SPA_WARNING, output)
+
+    def test_format_body_parsed(self):
+        result = FetchResult(
+            url="https://example.com",
+            headers="",
+            body="<html><body>Hello</body></html>",
+        )
+
+        self.assertEqual(format_body(result), "Hello\n")
+
+    def test_format_body_raw(self):
+        html = "<html><body>Hello</body></html>"
+        result = FetchResult(url="https://example.com", headers="", body=html)
+
+        self.assertEqual(format_body(result, raw=True), html)
 
     def test_empty_page_returns_empty_string(self):
         page = ParsedPage(title="", text="", links=())
