@@ -1,23 +1,6 @@
-# Curler CLI
+# Curler Manuscript
 
-CLI que busca URLs via curl e imprime o HTML cru (ou reindentado com `--pretty`). 
-
-Edição **Manuscript**: sem JavaScript, sem parser de conteúdo, sem dependências Python externas, HTML cru e original.
-
-Edição **Paperback**: adoção do BeautifulSoup para parser de conteúdo, objetivo inicial do projeto.
-
-Edição **Stagecraft**: Integração com o Playwright headless para renderização dinâmica de páginas.
-
-Edição **Blockbuster**: Integração total com Selenium para renderização de SPAs e uso completo da navegação web moderna, mas ainda nos moldes CLI.
-
-> Escopo atual do repositório: apenas Manuscript. Não adicione BeautifulSoup, Playwright ou Selenium sem pedido explícito.
-
-| Edição | Status | Deps |
-|--------|--------|------|
-| Manuscript | **ativa** | stdlib + curl |
-| Paperback | futura | + BeautifulSoup |
-| Stagecraft | futura | + Playwright headless |
-| Blockbuster | futura | + Selenium |
+CLI que busca URLs via `curl` do sistema e imprime HTML cru. Edição **Manuscript**: sem JavaScript, sem parser de conteúdo, sem dependências Python externas.
 
 ## Stack
 
@@ -50,7 +33,6 @@ Edição **Blockbuster**: Integração total com Selenium para renderização de
 - Erros de URL → `UrlError`; erros de rede/curl → `FetchError`
 - Testes usam `unittest.mock` — nunca batem na rede real
 - Commits: `feat|fix|chore(escopo): descrição` em português, imperativo
-- Mudanças user-facing (`feat`, `fix`, `perf`) → atualizar `CHANGELOG.md` antes do commit
 
 ## Regras de domínio (inegociáveis)
 
