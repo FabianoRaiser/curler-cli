@@ -111,6 +111,13 @@ curler> help
 curler> quit
 ```
 
+### Parsed output
+
+- Headings appear as `#`, `##`, etc.
+- Links appear inline as `text [1]`; run `links` in the REPL for full URLs
+- Footer shows link count: `(N links)` or `(N links — use links)` in the REPL
+- ANSI colors in interactive terminals; use `--no-color` or pipe to disable
+
 ## Test
 
 Run the unit test suite with the standard library:
