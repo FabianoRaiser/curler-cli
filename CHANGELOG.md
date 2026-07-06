@@ -6,6 +6,9 @@
 - Paperback edition: parsed page output by default, `--raw` for HTML source
 - REPL navigation: `links`, `go <n>`, `back`, `forward`
 
+### Fixed
+- Decodificação correta de páginas em ISO-8859-1 e outros charsets declarados
+
 ## [0.1.0] - 2026-07-03
 
 ### Added
