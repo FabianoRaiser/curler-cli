@@ -15,7 +15,7 @@ license = "MIT"
 dependencies = []
 
 [project.optional-dependencies]
-dev = ["pre-commit", "ruff", "build"]
+dev = ["pre-commit", "ruff", "build", "git-cliff"]
 
 [project.scripts]
 curler = "curler.cli:main"

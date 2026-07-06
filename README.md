@@ -124,6 +124,24 @@ pre-commit run --all-files
 python3 -m unittest discover -s tests
 ```
 
+### Changelog
+
+We follow [Keep a Changelog](https://keepachangelog.com/). The `[0.1.0]` section was written manually; from `v0.2.0` onward, release sections are generated with [git-cliff](https://git-cliff.org) from Conventional Commits.
+
+Preview unreleased changes (since the last tag):
+
+```bash
+git cliff --unreleased
+```
+
+Generate a release section locally (does not overwrite `[0.1.0]` — use `--prepend`):
+
+```bash
+git cliff --tag v0.2.0 --prepend CHANGELOG.md
+```
+
+On tag push, the [release workflow](.github/workflows/release.yml) runs git-cliff, commits the updated `CHANGELOG.md`, and uses the same output for the GitHub Release notes.
+
 ## Roadmap
 
 **Paperback** (next edition) will parse HTML into readable text, numbered links, and REPL navigation (`links`, `go`, `back`, `forward`). See [`docs/curler-guide.md`](docs/curler-guide.md) for the full edition roadmap.
