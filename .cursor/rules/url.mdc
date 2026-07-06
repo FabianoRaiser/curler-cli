@@ -1,0 +1,13 @@
+---
+description: Regras do módulo url (normalização e validação)
+globs: curler/url.py,tests/test_url.py
+alwaysApply: false
+---
+
+# Módulo url
+
+- `normalize_url(value)` adiciona `https://` quando não há scheme
+- Aceita só `http://` e `https://`; host obrigatório
+- Levante `UrlError` com mensagem útil para o usuário final
+- Função pura: sem I/O, sem subprocess, sem imports pesados
+- Todo caso novo → teste em `tests/test_url.py` (feliz + falha)

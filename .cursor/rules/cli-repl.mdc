@@ -1,0 +1,14 @@
+---
+description: Regras de CLI e REPL
+globs: curler/cli.py,curler/repl.py,tests/test_cli.py,tests/test_repl.py
+alwaysApply: false
+---
+
+# CLI e REPL
+
+- `build_parser()` define flags; `main()` orquestra fetch + output
+- Valide combinações incompatíveis de flags antes do fetch (ex.: `--headers` + `--pretty`)
+- REPL injeta `fetch_func` e `input_func` para testabilidade
+- Comandos REPL: url, headers, raw, pretty, help, quit/exit
+- Erros de domínio → `curler: {mensagem}` em stderr, continue no REPL / exit 1 no CLI
+- Nova flag → `cli.py` + `tests/test_cli.py` + README.md

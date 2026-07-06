@@ -1,0 +1,14 @@
+---
+description: Regras do módulo fetcher (subprocess curl)
+globs: curler/fetcher.py,tests/test_fetcher.py
+alwaysApply: false
+---
+
+# Módulo fetcher
+
+- `build_curl_command(url)` monta a lista de args — testável sem rede
+- `split_headers_and_body()` usa o **último** bloco de headers (redirects com `-L`)
+- Decode: headers `iso-8859-1`, body `utf-8` com `errors="replace"`
+- `FetchResult` é `frozen=True`; levante `FetchError` com mensagem clara
+- Nova flag de curl → atualizar `build_curl_command` + `tests/test_fetcher.py`
+- Testes: mock de `subprocess.run` e `shutil.which` — sem hit na rede

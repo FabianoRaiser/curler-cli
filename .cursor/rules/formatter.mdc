@@ -1,0 +1,13 @@
+---
+description: Regras do módulo formatter (indentação HTML)
+globs: curler/formatter.py,tests/test_formatter.py
+alwaysApply: false
+---
+
+# Módulo formatter
+
+- `format_html()` apenas reindenta markup — **não** interpreta conteúdo da página
+- Usa `HTMLParser` da stdlib; respeite `VOID_ELEMENTS`
+- Sem dependências externas (BeautifulSoup é Paperback)
+- HTML vazio → string vazia
+- Testes cobrem tags aninhadas, void elements e entidades

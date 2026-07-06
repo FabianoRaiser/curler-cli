@@ -1,0 +1,13 @@
+---
+description: Convenções gerais do Curler Manuscript
+alwaysApply: true
+---
+
+# Curler Manuscript
+
+- Edição Manuscript: stdlib only, sem deps Python externas
+- I/O `curl` apenas em `fetcher.py`; validação de URL em `url.py`
+- `FetchResult` é frozen dataclass; erros tipados (`UrlError`, `FetchError`)
+- Testes com `unittest` + mock — nunca requisições de rede reais
+- Paperback (parser, histórico) é escopo futuro — não misturar com Manuscript
+- Antes de finalizar: `python -m unittest discover -s tests` e `ruff check .`
