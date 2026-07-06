@@ -50,6 +50,7 @@ Edição **Blockbuster**: Integração total com Selenium para renderização de
 - Erros de URL → `UrlError`; erros de rede/curl → `FetchError`
 - Testes usam `unittest.mock` — nunca batem na rede real
 - Commits: `feat|fix|chore(escopo): descrição` em português, imperativo
+- Mudanças user-facing (`feat`, `fix`, `perf`) → atualizar `CHANGELOG.md` antes do commit
 
 ## Regras de domínio (inegociáveis)
 

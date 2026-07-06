@@ -1,0 +1,14 @@
+---
+description: Formato do CHANGELOG (Keep a Changelog)
+globs: CHANGELOG.md
+alwaysApply: false
+---
+
+# CHANGELOG.md
+
+- Seguir [Keep a Changelog](https://keepachangelog.com/)
+- Versão mais recente no topo: `## [X.Y.Z] - YYYY-MM-DD`
+- Seções: `Added`, `Changed`, `Fixed`, `Removed`, `Deprecated`, `Security`
+- Bullets curtos, user-facing — o que mudou para quem usa o CLI
+- Não listar `chore`, `ci`, `test` ou tooling interno
+- Atualizar antes do commit quando `feat`, `fix` ou `perf` forem user-facing
