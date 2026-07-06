@@ -13,7 +13,9 @@ authors = [
 ]
 license = "MIT"
 dependencies = []
-dev = ["pre-commit","ruff", "build"]
+
+[project.optional-dependencies]
+dev = ["pre-commit", "ruff", "build"]
 
 [project.scripts]
 curler = "curler.cli:main"
