@@ -12,7 +12,17 @@ SPA_WARNING = (
 )
 
 
-def render_page(page: ParsedPage) -> str:
+def link_count_footer(count: int, *, show_links_hint: bool) -> str:
+    """Format the footer showing how many links the page has."""
+    if count <= 0:
+        return ""
+    label = "1 link" if count == 1 else f"{count} links"
+    if show_links_hint:
+        return f"({label} — use links)"
+    return f"({label})"
+
+
+def render_page(page: ParsedPage, *, show_links_hint: bool = False) -> str:
     """Format a parsed page for terminal output."""
     lines: list[str] = []
 
@@ -25,10 +35,9 @@ def render_page(page: ParsedPage) -> str:
     if page.text:
         lines.extend([page.text, ""])
 
-    if page.links:
-        lines.append("Links:")
-        for link in page.links:
-            lines.append(f"  [{link.number}] {link.text} ({link.href})")
+    footer = link_count_footer(len(page.links), show_links_hint=show_links_hint)
+    if footer:
+        lines.append(footer)
 
     if not lines:
         return ""
@@ -36,10 +45,17 @@ def render_page(page: ParsedPage) -> str:
     return "\n".join(lines).rstrip() + "\n"
 
 
-def format_body(result: FetchResult, *, raw: bool = False, pretty: bool = False) -> str:
+def format_body(
+    result: FetchResult,
+    *,
+    raw: bool = False,
+    pretty: bool = False,
+    show_links_hint: bool = False,
+) -> str:
     """Choose parsed, raw, or pretty-printed output for a fetch result."""
     if pretty:
         return format_html(result.body)
     if raw:
         return result.body
-    return render_page(parse_html(result.body, base_url=result.url))
+    page = parse_html(result.body, base_url=result.url)
+    return render_page(page, show_links_hint=show_links_hint)

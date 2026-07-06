@@ -2,7 +2,7 @@
 
 [![CI](https://github.com/FabianoRaiser/curler-cli/actions/workflows/ci.yml/badge.svg)](https://github.com/FabianoRaiser/curler-cli/actions/workflows/ci.yml)
 
-Curler Paperback is the second edition of Curler: a command-line browser backed by the system `curl`. It fetches a URL, follows redirects, parses the HTML, and prints a readable page with title, text, and numbered links.
+Curler Paperback is the second edition of Curler: a command-line browser backed by the system `curl`. It fetches a URL, follows redirects, parses the HTML, and prints a readable page with title, text, and inline link references (`[1]`, `[2]`, …). Run `links` in the REPL to see full URLs.
 
 No JavaScript. No headless browser. Just the document — interpreted enough to read and navigate.
 

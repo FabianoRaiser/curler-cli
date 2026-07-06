@@ -23,11 +23,14 @@ class ParseHtmlTest(unittest.TestCase):
         self.assertEqual(page.links[0].text, "About us")
         self.assertEqual(page.links[0].href, "https://blog.example.com/about")
         self.assertEqual(page.links[1].href, "https://example.com/contact")
+        self.assertIn("About us [1]", page.text)
+        self.assertIn("Contact [2]", page.text)
 
     def test_wiki_like_page_skips_fragment_and_js_links(self):
         page = parse_html(WIKI_HTML, base_url="https://en.wikipedia.org/wiki/Python")
 
         self.assertIn("Python is a programming language.", page.text)
+        self.assertIn("Guido van Rossum [1]", page.text)
         self.assertEqual(len(page.links), 1)
         self.assertEqual(
             page.links[0].href,
@@ -48,6 +51,7 @@ class ParseHtmlTest(unittest.TestCase):
         )
 
         self.assertEqual(len(page.links), 1)
+        self.assertIn("Page [1]", page.text)
         self.assertEqual(page.links[0].href, "https://example.com/page")
 
     def test_empty_html_returns_empty_page(self):

@@ -6,6 +6,9 @@
 - Paperback edition: parsed page output by default, `--raw` for HTML source
 - REPL navigation: `links`, `go <n>`, `back`, `forward`
 
+### Changed
+- Links inline `[n]` no texto; lista completa só via comando `links`; contador no rodapé
+
 ### Fixed
 - Decodificação correta de páginas em ISO-8859-1 e outros charsets declarados
 

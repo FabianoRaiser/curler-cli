@@ -40,6 +40,8 @@ class ReplTest(unittest.TestCase):
         self.assertIn("Curler Paperback.", output.getvalue())
         self.assertIn("Home", output.getvalue())
         self.assertIn("Welcome", output.getvalue())
+        self.assertIn("About [1]", output.getvalue())
+        self.assertIn("(1 link — use links)", output.getvalue())
         self.assertIn("HTTP/2 200", output.getvalue())
         self.assertIn(HOME_HTML, output.getvalue())
         self.assertEqual(error.getvalue(), "")

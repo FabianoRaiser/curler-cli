@@ -6,10 +6,10 @@ from curler.renderer import SPA_WARNING, format_body, render_page
 
 
 class RenderPageTest(unittest.TestCase):
-    def test_renders_title_text_and_links(self):
+    def test_renders_title_text_and_inline_link_count(self):
         page = ParsedPage(
             title="Example",
-            text="Hello\nWorld",
+            text="Read Docs [1] and Blog [2] for more.",
             links=(
                 ParsedLink(number=1, text="Docs", href="https://example.com/docs"),
                 ParsedLink(number=2, text="Blog", href="https://example.com/blog"),
@@ -19,9 +19,21 @@ class RenderPageTest(unittest.TestCase):
         output = render_page(page)
 
         self.assertIn("Example", output)
-        self.assertIn("Hello\nWorld", output)
-        self.assertIn("[1] Docs (https://example.com/docs)", output)
-        self.assertIn("[2] Blog (https://example.com/blog)", output)
+        self.assertIn("Read Docs [1] and Blog [2] for more.", output)
+        self.assertIn("(2 links)", output)
+        self.assertNotIn("Links:", output)
+        self.assertNotIn("https://example.com/docs", output)
+
+    def test_repl_footer_includes_links_hint(self):
+        page = ParsedPage(
+            title="Example",
+            text="About us [1]",
+            links=(ParsedLink(number=1, text="About us", href="https://example.com/about"),),
+        )
+
+        output = render_page(page, show_links_hint=True)
+
+        self.assertIn("(1 link — use links)", output)
 
     def test_includes_spa_warning(self):
         page = ParsedPage(title="App", text="", links=(), spa_warning=True)
@@ -38,6 +50,19 @@ class RenderPageTest(unittest.TestCase):
         )
 
         self.assertEqual(format_body(result), "Hello\n")
+
+    def test_format_body_with_links_shows_count(self):
+        result = FetchResult(
+            url="https://example.com",
+            headers="",
+            body='<html><body><a href="/about">About</a></body></html>',
+        )
+
+        output = format_body(result)
+
+        self.assertIn("About [1]", output)
+        self.assertIn("(1 link)", output)
+        self.assertNotIn("use links", output)
 
     def test_format_body_raw(self):
         html = "<html><body>Hello</body></html>"
