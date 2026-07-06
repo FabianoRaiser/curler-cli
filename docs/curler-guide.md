@@ -117,7 +117,7 @@ cd curler-cli
 python3 -m venv .venv
 source .venv/bin/activate
 pip install -e .
-curler --version   # curler 0.2.1
+curler --version   # curler 0.2.2
 ```
 
 ---

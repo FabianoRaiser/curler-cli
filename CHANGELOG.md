@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.2.2] - 2026-07-06
+
+### Fixed
+
+- Workflow de release: remove commit/push do CHANGELOG em detached HEAD; git-cliff gera só as release notes
+
 ## [0.2.1] - 2026-07-06
 
 ### Fixed
