@@ -1,6 +1,6 @@
 # Curler Manuscript
 
-![CI](https://github.com/FabianoRaiser/curler-cli/actions/workflows/ci.yml/badge.svg)
+[![CI](https://github.com/FabianoRaiser/curler-cli/actions/workflows/ci.yml/badge.svg)](https://github.com/FabianoRaiser/curler-cli/actions/workflows/ci.yml)
 
 Curler Manuscript is the first edition of Curler: a tiny command-line browser backed by the system `curl`. It fetches a URL, follows redirects, and prints the raw HTML exactly as the server returned it.
 
@@ -13,15 +13,41 @@ No JavaScript. No HTML parser. No headless browser. Just the document.
 
 ## Install
 
-Create a virtual environment (recommended on Debian/Ubuntu to avoid PEP 668 errors):
+Use a virtual environment — on Debian/Ubuntu the system Python is **externally managed** (PEP 668), so `pip install` without venv fails with `externally-managed-environment`.
 
 ```bash
+# clone and enter the repo
+git clone https://github.com/FabianoRaiser/curler-cli.git
+cd curler-cli
+
+# create and activate a venv (once per machine / folder)
 python3 -m venv .venv
-source .venv/bin/activate
+source .venv/bin/activate   # Windows: .venv\Scripts\activate
+
+# install the CLI in editable mode
 pip install -e .
 ```
 
-If you rename or move the project folder, recreate `.venv` from scratch — virtualenv paths are not portable.
+If `python3 -m venv .venv` fails, install the venv module first:
+
+```bash
+sudo apt install python3-venv python3-full
+```
+
+**Check that the venv is active** before installing or running tests:
+
+```bash
+which python   # should end with .venv/bin/python
+which pip      # should end with .venv/bin/pip
+```
+
+**After renaming or moving the project folder**, delete `.venv` and recreate it — paths inside the venv are absolute and break when the directory changes.
+
+For development tools (pre-commit, Ruff, build):
+
+```bash
+pip install -e ".[dev]"
+```
 
 ## Use
 
@@ -90,12 +116,12 @@ In the REPL, enter a URL such as `example.com`, then run `headers`, `raw`, `pret
 
 ## Development
 
-Install dev tools inside your virtualenv:
+With the venv activated and dev extras installed (`pip install -e ".[dev]"`):
 
 ```bash
-pip install pre-commit ruff
 pre-commit install
 pre-commit run --all-files
+python3 -m unittest discover -s tests
 ```
 
 ## Roadmap
