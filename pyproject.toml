@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "curler-paperback"
-version = "0.2.0"
+version = "0.2.1"
 description = "A curl-backed CLI browser that parses HTML into readable pages."
 readme = "README.md"
 requires-python = ">=3.10"

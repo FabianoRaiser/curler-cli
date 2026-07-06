@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.2.1] - 2026-07-06
+
+### Fixed
+
+- Workflow de release: git-cliff exige `--latest` ou `--unreleased` para definir o intervalo de commits
+
 ## [0.2.0] - 2026-07-06
 
 ### Added

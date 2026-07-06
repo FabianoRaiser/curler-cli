@@ -163,7 +163,7 @@ git cliff --unreleased
 Generate a release section locally (does not overwrite `[0.1.0]` — use `--prepend`):
 
 ```bash
-git cliff --tag v0.2.0 --prepend CHANGELOG.md
+git cliff --latest --tag v0.2.1 --prepend CHANGELOG.md
 ```
 
 On tag push, the [release workflow](.github/workflows/release.yml) runs git-cliff, commits the updated `CHANGELOG.md`, and uses the same output for the GitHub Release notes.
