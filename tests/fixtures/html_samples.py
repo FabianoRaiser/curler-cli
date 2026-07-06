@@ -52,3 +52,62 @@ DUPLICATE_LINKS_HTML = """\
 </body>
 </html>
 """
+
+HEADINGS_HTML = """\
+<!DOCTYPE html>
+<html>
+<head><title>Docs</title></head>
+<body>
+  <h1>Getting Started</h1>
+  <h2>Installation</h2>
+  <h3>Requirements</h3>
+  <p>Need Python 3.10+.</p>
+</body>
+</html>
+"""
+
+LISTS_HTML = """\
+<!DOCTYPE html>
+<html>
+<head><title>Lists</title></head>
+<body>
+  <ul>
+    <li>Gmail</li>
+    <li>Imagens</li>
+  </ul>
+  <ol>
+    <li>Passo 1</li>
+    <li>Passo 2</li>
+  </ol>
+</body>
+</html>
+"""
+
+NESTED_LIST_HTML = """\
+<!DOCTYPE html>
+<html>
+<head><title>Nested</title></head>
+<body>
+  <ul>
+    <li>One</li>
+    <li>Two
+      <ul>
+        <li>Two A</li>
+      </ul>
+    </li>
+  </ul>
+</body>
+</html>
+"""
+
+LIST_WITH_LINK_HTML = """\
+<!DOCTYPE html>
+<html>
+<head><title>Nav</title></head>
+<body>
+  <ul>
+    <li><a href="/docs">Docs</a></li>
+  </ul>
+</body>
+</html>
+"""

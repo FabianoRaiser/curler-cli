@@ -9,6 +9,14 @@ from bs4 import BeautifulSoup, NavigableString, Tag
 
 SPA_ROOT_IDS = frozenset({"root", "app", "__next"})
 SKIP_LINK_SCHEMES = frozenset({"javascript", "mailto", "tel", "data"})
+HEADING_PREFIX = {
+    "h1": "# ",
+    "h2": "## ",
+    "h3": "### ",
+    "h4": "#### ",
+    "h5": "##### ",
+    "h6": "###### ",
+}
 BLOCK_TAGS = frozenset(
     {
         "article",
@@ -16,21 +24,12 @@ BLOCK_TAGS = frozenset(
         "blockquote",
         "div",
         "footer",
-        "h1",
-        "h2",
-        "h3",
-        "h4",
-        "h5",
-        "h6",
         "header",
-        "li",
         "main",
         "nav",
-        "ol",
         "p",
         "section",
         "tr",
-        "ul",
     }
 )
 
@@ -77,6 +76,14 @@ def _resolve_link_href(anchor: Tag, *, base_url: str) -> str | None:
     return urljoin(base_url, href)
 
 
+def _ordered_list_item_number(item: Tag) -> int:
+    number = 1
+    for sibling in item.previous_siblings:
+        if isinstance(sibling, Tag) and sibling.name == "li":
+            number += 1
+    return number
+
+
 def _extract_text_with_links(
     soup: BeautifulSoup, *, base_url: str
 ) -> tuple[str, tuple[ParsedLink, ...]]:
@@ -94,7 +101,12 @@ def _extract_text_with_links(
         links.append(ParsedLink(number=number, text=text, href=href))
         return number
 
-    def render(node: Tag | NavigableString, parent: Tag | None = None) -> str:
+    def render(
+        node: Tag | NavigableString,
+        parent: Tag | None = None,
+        *,
+        list_depth: int = 0,
+    ) -> str:
         if isinstance(node, NavigableString):
             return str(node)
 
@@ -114,6 +126,41 @@ def _extract_text_with_links(
         if node.name == "br":
             return "\n"
 
+        if node.name in HEADING_PREFIX:
+            rendered_children = "".join(render(child, node) for child in node.children).strip()
+            if rendered_children:
+                return HEADING_PREFIX[node.name] + rendered_children + "\n"
+            return ""
+
+        if node.name in {"ul", "ol"}:
+            return "".join(
+                render(child, node, list_depth=list_depth) for child in node.children
+            )
+
+        if node.name == "li" and parent is not None and parent.name in {"ul", "ol"}:
+            line_parts: list[str] = []
+            nested_parts: list[str] = []
+            for child in node.children:
+                if isinstance(child, Tag) and child.name in {"ul", "ol"}:
+                    nested_parts.append(
+                        render(child, node, list_depth=list_depth + 1)
+                    )
+                else:
+                    line_parts.append(render(child, node, list_depth=list_depth))
+
+            line_text = "".join(line_parts).strip()
+            indent = "  " * list_depth
+            if parent.name == "ul":
+                marker = "- "
+            else:
+                marker = f"{_ordered_list_item_number(node)}. "
+
+            rendered = ""
+            if line_text:
+                rendered = f"{indent}{marker}{line_text}\n"
+            rendered += "".join(nested_parts)
+            return rendered
+
         rendered_children = "".join(render(child, node) for child in node.children)
 
         if node.name in BLOCK_TAGS:
@@ -129,8 +176,8 @@ def _extract_text_with_links(
 
     root = soup.body or soup
     raw_text = render(root)
-    lines = [line.strip() for line in raw_text.splitlines()]
-    text = "\n".join(line for line in lines if line)
+    lines = [line.rstrip() for line in raw_text.splitlines()]
+    text = "\n".join(line for line in lines if line.strip())
     return text, tuple(links)
 
 
