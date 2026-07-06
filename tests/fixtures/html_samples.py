@@ -122,3 +122,17 @@ INLINE_MARKUP_HTML = """\
 </body>
 </html>
 """
+
+FRAMER_SSR_HTML = """\
+<!DOCTYPE html>
+<html>
+<head><title>Framer Site</title></head>
+<body>
+  <nav>
+    <!--$--><a href="https://example.com/">Home</a><!--/$-->
+    <!--$--><a href="/eventos">Eventos</a><!--/$-->
+    <!--$--><a href="/youtube">Youtube</a><!--/$-->
+  </nav>
+</body>
+</html>
+"""

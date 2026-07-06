@@ -4,6 +4,7 @@ from curler.parser import parse_html
 from tests.fixtures.html_samples import (
     BLOG_HTML,
     DUPLICATE_LINKS_HTML,
+    FRAMER_SSR_HTML,
     HEADINGS_HTML,
     INLINE_MARKUP_HTML,
     LIST_WITH_LINK_HTML,
@@ -83,6 +84,15 @@ class ParseHtmlTest(unittest.TestCase):
         self.assertIn("**curl**", page.text)
         self.assertIn("`python`", page.text)
         self.assertIn("> A note.", page.text)
+
+    def test_ignores_framer_ssr_html_comments(self):
+        page = parse_html(FRAMER_SSR_HTML, base_url="https://example.com/")
+
+        self.assertIn("Home [1]", page.text)
+        self.assertIn("Eventos [2]", page.text)
+        self.assertIn("Youtube [3]", page.text)
+        self.assertNotIn("$", page.text)
+        self.assertNotIn("/$", page.text)
 
     def test_detects_empty_spa_root(self):
         page = parse_html(SPA_HTML, base_url="https://app.example.com/")

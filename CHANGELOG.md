@@ -13,6 +13,7 @@
 
 ### Fixed
 - Decodificação correta de páginas em ISO-8859-1 e outros charsets declarados
+- Comentários HTML (ex.: marcadores SSR do Framer) não aparecem mais como `$` na saída
 
 ## [0.1.0] - 2026-07-03
 

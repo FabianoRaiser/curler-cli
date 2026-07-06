@@ -5,7 +5,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from urllib.parse import urljoin, urlparse
 
-from bs4 import BeautifulSoup, NavigableString, Tag
+from bs4 import BeautifulSoup, Comment, NavigableString, Tag
 
 SPA_ROOT_IDS = frozenset({"root", "app", "__next"})
 SKIP_LINK_SCHEMES = frozenset({"javascript", "mailto", "tel", "data"})
@@ -106,6 +106,9 @@ def _extract_text_with_links(
         *,
         list_depth: int = 0,
     ) -> str:
+        if isinstance(node, Comment):
+            return ""
+
         if isinstance(node, NavigableString):
             return str(node)
 
