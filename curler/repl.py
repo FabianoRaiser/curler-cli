@@ -54,7 +54,7 @@ def run_repl(
         if entry is None:
             return
         result = FetchResult(url=entry.url, headers=entry.headers, body=entry.body)
-        print(format_body(result, show_links_hint=True), end="", file=output)
+        print(format_body(result, show_links_hint=True, output=output), end="", file=output)
 
     def push_result(result: FetchResult) -> None:
         history.push(

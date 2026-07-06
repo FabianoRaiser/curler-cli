@@ -9,6 +9,7 @@
 ### Changed
 - Links inline `[n]` no texto; lista completa só via comando `links`; contador no rodapé
 - Headings h1–h6 com marcadores `#`/`##`/…; listas com `-` e numeração `1.`
+- Saída parseada com cores ANSI (links azuis, headings destacados); `--no-color` e `NO_COLOR`
 
 ### Fixed
 - Decodificação correta de páginas em ISO-8859-1 e outros charsets declarados

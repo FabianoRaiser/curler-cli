@@ -5,6 +5,7 @@ from tests.fixtures.html_samples import (
     BLOG_HTML,
     DUPLICATE_LINKS_HTML,
     HEADINGS_HTML,
+    INLINE_MARKUP_HTML,
     LIST_WITH_LINK_HTML,
     LISTS_HTML,
     NESTED_LIST_HTML,
@@ -75,6 +76,13 @@ class ParseHtmlTest(unittest.TestCase):
 
         self.assertIn("- Docs [1]", page.text)
         self.assertEqual(page.links[0].href, "https://example.com/docs")
+
+    def test_renders_inline_markup_markers(self):
+        page = parse_html(INLINE_MARKUP_HTML, base_url="https://example.com/")
+
+        self.assertIn("**curl**", page.text)
+        self.assertIn("`python`", page.text)
+        self.assertIn("> A note.", page.text)
 
     def test_detects_empty_spa_root(self):
         page = parse_html(SPA_HTML, base_url="https://app.example.com/")

@@ -21,7 +21,6 @@ BLOCK_TAGS = frozenset(
     {
         "article",
         "aside",
-        "blockquote",
         "div",
         "footer",
         "header",
@@ -125,6 +124,24 @@ def _extract_text_with_links(
 
         if node.name == "br":
             return "\n"
+
+        if node.name in ("strong", "b"):
+            inner = "".join(render(child, node) for child in node.children)
+            return f"**{inner}**"
+
+        if node.name in ("em", "i"):
+            inner = "".join(render(child, node) for child in node.children)
+            return f"*{inner}*"
+
+        if node.name == "code":
+            inner = "".join(render(child, node) for child in node.children)
+            return f"`{inner}`"
+
+        if node.name == "blockquote":
+            inner = "".join(render(child, node) for child in node.children).strip()
+            if not inner:
+                return ""
+            return "\n".join(f"> {part}" for part in inner.splitlines()) + "\n"
 
         if node.name in HEADING_PREFIX:
             rendered_children = "".join(render(child, node) for child in node.children).strip()

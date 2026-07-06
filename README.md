@@ -64,6 +64,14 @@ Print the raw HTML body (Manuscript-style):
 curler --raw example.com
 ```
 
+Disable ANSI colors in parsed output:
+
+```bash
+curler --no-color example.com
+```
+
+Also respects the `NO_COLOR` environment variable.
+
 Print only response headers:
 
 ```bash

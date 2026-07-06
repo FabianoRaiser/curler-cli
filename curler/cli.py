@@ -41,6 +41,11 @@ def build_parser() -> argparse.ArgumentParser:
         help="print the response body with readable HTML indentation",
     )
     parser.add_argument(
+        "--no-color",
+        action="store_true",
+        help="disable ANSI colors in parsed output",
+    )
+    parser.add_argument(
         "--version",
         action="version",
         version=f"curler {__version__}",
@@ -72,7 +77,13 @@ def main(
         print(f"curler: {exc}", file=error)
         return 1
 
-    body = format_body(result, raw=args.raw, pretty=args.pretty)
+    body = format_body(
+        result,
+        raw=args.raw,
+        pretty=args.pretty,
+        color=False if args.no_color else None,
+        output=output,
+    )
 
     if args.headers:
         print(result.headers, end="", file=output)

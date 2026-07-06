@@ -111,3 +111,14 @@ LIST_WITH_LINK_HTML = """\
 </body>
 </html>
 """
+
+INLINE_MARKUP_HTML = """\
+<!DOCTYPE html>
+<html>
+<head><title>Markup</title></head>
+<body>
+  <p>Use <strong>curl</strong> and <code>python</code>.</p>
+  <blockquote>A note.</blockquote>
+</body>
+</html>
+"""
