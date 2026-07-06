@@ -12,7 +12,7 @@ authors = [
     { name = "Curler contributors" }
 ]
 license = "MIT"
-dependencies = []
+dependencies = ["beautifulsoup4", "lxml"]
 
 [project.optional-dependencies]
 dev = ["pre-commit", "ruff", "build", "git-cliff"]
