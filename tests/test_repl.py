@@ -166,6 +166,113 @@ class ReplTest(unittest.TestCase):
         self.assertGreaterEqual(output.getvalue().count("About us"), 2)
         self.assertEqual(error.getvalue(), "")
 
+    def test_repl_back_at_start_reports_error(self):
+        commands = iter(["example.com", "back", "quit"])
+
+        def fake_input(prompt):
+            return next(commands)
+
+        def fake_fetch(url):
+            return FetchResult(
+                url="https://example.com",
+                headers="HTTP/2 200\n\n",
+                body=HOME_HTML,
+            )
+
+        output = StringIO()
+        error = StringIO()
+
+        run_repl(input_func=fake_input, output=output, error=error, fetch_func=fake_fetch)
+
+        self.assertIn("No previous page.", error.getvalue())
+
+    def test_repl_forward_at_end_reports_error(self):
+        commands = iter(["example.com", "forward", "quit"])
+
+        def fake_input(prompt):
+            return next(commands)
+
+        def fake_fetch(url):
+            return FetchResult(
+                url="https://example.com",
+                headers="HTTP/2 200\n\n",
+                body=HOME_HTML,
+            )
+
+        output = StringIO()
+        error = StringIO()
+
+        run_repl(input_func=fake_input, output=output, error=error, fetch_func=fake_fetch)
+
+        self.assertIn("No next page.", error.getvalue())
+
+    def test_repl_go_with_invalid_link_reports_error(self):
+        commands = iter(["example.com", "go 99", "quit"])
+
+        def fake_input(prompt):
+            return next(commands)
+
+        def fake_fetch(url):
+            return FetchResult(
+                url="https://example.com",
+                headers="HTTP/2 200\n\n",
+                body=HOME_HTML,
+            )
+
+        output = StringIO()
+        error = StringIO()
+
+        run_repl(input_func=fake_input, output=output, error=error, fetch_func=fake_fetch)
+
+        self.assertIn("Link 99 not found.", error.getvalue())
+
+    def test_repl_go_without_page_reports_error(self):
+        commands = iter(["go 1", "quit"])
+
+        def fake_input(prompt):
+            return next(commands)
+
+        output = StringIO()
+        error = StringIO()
+
+        run_repl(input_func=fake_input, output=output, error=error)
+
+        self.assertIn("No page loaded.", error.getvalue())
+
+    def test_repl_links_without_page_reports_error(self):
+        commands = iter(["links", "quit"])
+
+        def fake_input(prompt):
+            return next(commands)
+
+        output = StringIO()
+        error = StringIO()
+
+        run_repl(input_func=fake_input, output=output, error=error)
+
+        self.assertIn("No page loaded.", error.getvalue())
+
+    def test_repl_reports_no_links_on_empty_page(self):
+        commands = iter(["example.com", "links", "quit"])
+
+        def fake_input(prompt):
+            return next(commands)
+
+        def fake_fetch(url):
+            return FetchResult(
+                url="https://example.com",
+                headers="HTTP/2 200\n\n",
+                body="<html><body><p>No links here</p></body></html>",
+            )
+
+        output = StringIO()
+        error = StringIO()
+
+        run_repl(input_func=fake_input, output=output, error=error, fetch_func=fake_fetch)
+
+        self.assertIn("No links found.", output.getvalue())
+        self.assertEqual(error.getvalue(), "")
+
 
 if __name__ == "__main__":
     unittest.main()

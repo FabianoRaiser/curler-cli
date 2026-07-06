@@ -96,6 +96,24 @@ class CliTest(unittest.TestCase):
             "<html>\n  <body>\n    Hello\n  </body>\n</html>\n",
         )
 
+    def test_no_color_disables_ansi_in_parsed_output(self):
+        with patch(
+            "curler.cli.fetch",
+            return_value=FetchResult(
+                url="https://example.com",
+                headers="HTTP/2 200\n\n",
+                body='<html><body><a href="/x">Link</a></body></html>',
+            ),
+        ):
+            output = StringIO()
+            code = curler.cli.main(
+                ["--no-color", "example.com"], output=output, error=StringIO()
+            )
+
+        self.assertEqual(code, 0)
+        self.assertNotIn("\033[", output.getvalue())
+        self.assertIn("Link [1]", output.getvalue())
+
     def test_direct_mode_reports_invalid_url(self):
         error = StringIO()
 
