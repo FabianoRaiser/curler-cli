@@ -1,0 +1,163 @@
+:root {
+    --bg: #0d1117;
+    --bg-panel: #161b22;
+    --border: #30363d;
+    --text: #c9d1d9;
+    --dim: #8b949e;
+    --bright-cyan: #56d4dd;
+    --cyan: #39c5cf;
+    --yellow: #e3b341;
+    --blue: #58a6ff;
+    --magenta: #d2a8ff;
+    --prompt: #7ee787;
+    --font: "JetBrains Mono", "Fira Code", "IBM Plex Mono", "Consolas", "Lucida Console", ui-monospace, monospace;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font);
+    font-size: 15px;
+    line-height: 1.6;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    padding: 2rem 1rem;
+}
+
+.terminal {
+    width: min(720px, 100%);
+    background: var(--bg-panel);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1.5rem 1.75rem;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+}
+
+.prompt {
+    color: var(--prompt);
+}
+
+.dim {
+    color: var(--dim);
+}
+
+.h1 {
+    color: var(--bright-cyan);
+    font-weight: bold;
+}
+
+.h2 {
+    color: var(--cyan);
+    font-weight: bold;
+}
+
+.warn {
+    color: var(--yellow);
+}
+
+.code {
+    color: var(--magenta);
+}
+
+.block {
+    margin-bottom: 1rem;
+}
+
+.footer-links {
+    margin-top: 1.5rem;
+}
+
+.footer-links a {
+    color: var(--blue);
+    text-decoration: underline;
+    margin-right: 1.25rem;
+}
+
+.link {
+    color: var(--blue);
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+.link:hover {
+    opacity: 0.85;
+}
+
+.cursor {
+    color: var(--prompt);
+    animation: blink 1s step-end infinite;
+}
+
+@keyframes blink {
+    50% {
+        opacity: 0;
+    }
+}
+
+.hidden {
+    display: none;
+}
+
+.repl-controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+.repl-controls button,
+.install-row button,
+.demo-btn {
+    font-family: var(--font);
+    font-size: 13px;
+    background: var(--bg);
+    color: var(--cyan);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 0.25rem 0.6rem;
+    cursor: pointer;
+}
+
+.repl-controls button:hover,
+.install-row button:hover,
+.demo-btn:hover {
+    border-color: var(--cyan);
+}
+
+.install-row button.copied {
+    color: var(--prompt);
+    border-color: var(--prompt);
+}
+
+.repl-controls button:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+.install-row {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.hr {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 1.5rem 0;
+}
+
+.session-log .block {
+    margin-bottom: 0.5rem;
+}
+
+.page-block {
+    margin-bottom: 1.25rem;
+}

@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Curler Paperback</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <main class="terminal">
+        <p class="block" id="command-line">
+            <span class="prompt">curler&gt;</span>
+            <span id="typed-command"></span><span class="cursor" id="cursor">█</span>
+        </p>
+
+        <div id="session-log" class="session-log hidden"></div>
+
+        <section id="repl-section" class="hidden">
+            <p class="block dim">— REPL —</p>
+            <div class="repl-controls">
+                <button type="button" data-cmd="links">links</button>
+                <button type="button" data-cmd="go 1" id="btn-go-1" disabled>go 1</button>
+                <button type="button" data-cmd="back" id="btn-back" disabled>back</button>
+            </div>
+        </section>
+
+        <hr class="hr">
+
+        <p class="block install-row">
+            <span class="prompt">$</span>
+            <span class="code" id="install-cmd">pip install curler-paperback</span>
+            <button type="button" id="copy-btn">copy</button>
+        </p>
+
+        <p class="block">
+            <button type="button" id="spa-demo" class="demo-btn">demo: SPA warning</button>
+        </p>
+
+        <nav class="footer-links">
+            <a href="https://github.com/fabianoraiser/curler-cli" target="_blank" rel="noopener">GitHub</a>
+            <a href="https://github.com/FabianoRaiser/curler-cli/blob/main/docs/curler-guide.md" target="_blank"
+                rel="noopener">Docs</a>
+        </nav>
+    </main>
+
+    <script src="app.js"></script>
+</body>
+
+</html>
