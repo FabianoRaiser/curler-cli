@@ -11,41 +11,176 @@
 </head>
 
 <body>
-    <main class="terminal">
-        <p class="block" id="command-line">
-            <span class="prompt">curler&gt;</span>
-            <span id="typed-command"></span><span class="cursor" id="cursor">█</span>
-        </p>
-
-        <div id="session-log" class="session-log hidden"></div>
-
-        <section id="repl-section" class="hidden">
-            <p class="block dim">— REPL —</p>
-            <div class="repl-controls">
-                <button type="button" data-cmd="links">links</button>
-                <button type="button" data-cmd="go 1" id="btn-go-1" disabled>go 1</button>
-                <button type="button" data-cmd="back" id="btn-back" disabled>back</button>
+    <!-- 1. Hero -->
+    <section id="hero" class="section hero">
+        <div class="hero-copy">
+            <h1 class="hero-title">Curler Paperback</h1>
+            <p class="hero-pitch">Just the document — interpreted enough to read and navigate.</p>
+            <p class="dim">No JavaScript. No headless browser. Just curl and HTML.</p>
+            <div class="install-row">
+                <span class="prompt">$</span>
+                <span class="code">pip install curler-paperback</span>
+                <button type="button" class="copy-btn" data-copy="pip install curler-paperback">copy</button>
             </div>
-        </section>
+        </div>
+        <div class="terminal-window" aria-label="curler example.com output preview">
+            <p class="block shell-cmd"><span class="prompt">$</span> curler example.com</p>
+            <div class="page-block">
+                <p class="block h1"># Example Domain</p>
+                <p class="block">This domain is for use in documentation examples without needing permission. Avoid use in operations.</p>
+                <p class="block"><span class="link">Learn more [1]</span></p>
+                <p class="block dim">(1 link — use links)</p>
+            </div>
+        </div>
+    </section>
 
-        <hr class="hr">
+    <!-- 2. Why -->
+    <section id="why" class="section section-alt">
+        <div class="why-grid">
+            <article class="why-card">
+                <p class="why-icon">∅ JS</p>
+                <h2 class="h2">No JavaScript engine</h2>
+                <p class="dim">Fetch with curl. The HTML the server sends is what you read.</p>
+            </article>
+            <article class="why-card">
+                <p class="why-icon">~15MB</p>
+                <h2 class="h2">No heavy browser</h2>
+                <p class="dim">No 300MB Chromium. Paperback is curl plus a parser.</p>
+            </article>
+            <article class="why-card">
+                <p class="why-icon">&gt;_</p>
+                <h2 class="h2">Native to the shell</h2>
+                <p class="dim">REPL, ANSI colors, pipe-friendly. Built for the terminal.</p>
+            </article>
+        </div>
+    </section>
 
-        <p class="block install-row">
+    <!-- 3. Demo tabs -->
+    <section id="demo" class="section">
+        <h2 class="section-title h2">Output modes</h2>
+        <p class="section-lead dim">Same page, different views — click a tab.</p>
+        <div class="tabs" role="tablist" aria-label="Output modes">
+            <button type="button" class="tab active" role="tab" data-tab="parsed" aria-selected="true">parsed</button>
+            <button type="button" class="tab" role="tab" data-tab="raw" aria-selected="false">--raw</button>
+            <button type="button" class="tab" role="tab" data-tab="pretty" aria-selected="false">--pretty</button>
+            <button type="button" class="tab" role="tab" data-tab="headers" aria-selected="false">--headers</button>
+        </div>
+        <div class="terminal-window" id="demo-output" role="tabpanel" aria-label="Demo output"></div>
+    </section>
+
+    <!-- 4. REPL -->
+    <section id="repl" class="section section-alt">
+        <h2 class="section-title h2">Interactive REPL</h2>
+        <p class="section-lead dim">Run <span class="cmd">curler</span> with no arguments to open the shell.</p>
+        <div class="repl-grid">
+            <div class="terminal-window" aria-label="REPL session example">
+                <p class="block shell-cmd"><span class="prompt">curler&gt;</span> example.com</p>
+                <div class="page-block">
+                    <p class="block h1"># Example Domain</p>
+                    <p class="block">This domain is for use in documentation examples without needing permission. Avoid use in operations.</p>
+                    <p class="block"><span class="link">Learn more [1]</span></p>
+                    <p class="block dim">(1 link — use links)</p>
+                </div>
+                <p class="block shell-cmd"><span class="prompt">curler&gt;</span> links</p>
+                <p class="block link">[1] Learn more — https://www.iana.org/domains/example</p>
+                <p class="block shell-cmd"><span class="prompt">curler&gt;</span> go 1</p>
+                <div class="page-block">
+                    <p class="block h1"># Example Domains</p>
+                    <p class="block">As described in RFC 2606 and RFC 6761, a number of domains such as example.com and example.org are maintained for documentation purposes.</p>
+                    <p class="block dim">(1 link — use links)</p>
+                </div>
+            </div>
+            <div class="terminal-window">
+                <table class="cli-table">
+                    <thead>
+                        <tr>
+                            <th>command</th>
+                            <th>what it does</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="cmd">&lt;url&gt;</td>
+                            <td>fetch and show the parsed page</td>
+                        </tr>
+                        <tr>
+                            <td class="cmd">links</td>
+                            <td>list numbered links with full urls</td>
+                        </tr>
+                        <tr>
+                            <td class="cmd">go &lt;n&gt;</td>
+                            <td>follow link number n</td>
+                        </tr>
+                        <tr>
+                            <td class="cmd">back / forward</td>
+                            <td>move through navigation history</td>
+                        </tr>
+                        <tr>
+                            <td class="cmd">raw / pretty / headers</td>
+                            <td>inspect the current page</td>
+                        </tr>
+                        <tr>
+                            <td class="cmd">help / quit</td>
+                            <td>show help or exit</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    <!-- 5. Editions -->
+    <section id="editions" class="section">
+        <h2 class="section-title h2">Editions</h2>
+        <p class="section-lead dim">Where you are and where Curler is going.</p>
+        <div class="terminal-window">
+            <table class="cli-table">
+                <thead>
+                    <tr>
+                        <th>edition</th>
+                        <th>status</th>
+                        <th>what it does</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="cmd">manuscript</td>
+                        <td>legacy · v0.1</td>
+                        <td>raw fetch, raw / indented html</td>
+                    </tr>
+                    <tr class="highlight">
+                        <td class="cmd">paperback</td>
+                        <td>current · v0.2</td>
+                        <td>parse + render + repl + color</td>
+                    </tr>
+                    <tr>
+                        <td class="cmd">stagecraft</td>
+                        <td>roadmap</td>
+                        <td>headless rendering via playwright</td>
+                    </tr>
+                    <tr>
+                        <td class="cmd">blockbuster</td>
+                        <td>roadmap</td>
+                        <td>full browser automation via selenium</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <!-- 6. Footer -->
+    <footer id="site-footer" class="section section-footer">
+        <div class="install-row">
             <span class="prompt">$</span>
-            <span class="code" id="install-cmd">pip install curler-paperback</span>
-            <button type="button" id="copy-btn">copy</button>
-        </p>
-
-        <p class="block">
-            <button type="button" id="spa-demo" class="demo-btn">demo: SPA warning</button>
-        </p>
-
+            <span class="code">pip install curler-paperback</span>
+            <button type="button" class="copy-btn" data-copy="pip install curler-paperback">copy</button>
+        </div>
         <nav class="footer-links">
             <a href="https://github.com/fabianoraiser/curler-cli" target="_blank" rel="noopener">GitHub</a>
             <a href="https://github.com/FabianoRaiser/curler-cli/blob/main/docs/curler-guide.md" target="_blank"
                 rel="noopener">Docs</a>
         </nav>
-    </main>
+    </footer>
 
     <script src="app.js"></script>
 </body>

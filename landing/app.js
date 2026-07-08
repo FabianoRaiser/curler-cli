@@ -1,203 +1,115 @@
-const PAGES = {
-  example: {
-    title: "Example Domain",
-    lines: [
-      "This domain is for use in documentation examples",
-      "without needing permission. Avoid use in operations.",
-    ],
-    links: [{ n: 1, text: "Learn more", target: "iana" }],
-    footer: "(1 link — use links)",
+const DEMO = {
+  parsed: {
+    shell: "curler example.com",
+    html: `
+      <div class="page-block">
+        <p class="block h1"># Example Domain</p>
+        <p class="block">This domain is for use in documentation examples</p>
+        <p class="block">without needing permission. Avoid use in operations.</p>
+        <p class="block"><span class="link">Learn more [1]</span></p>
+        <p class="block dim">(1 link — use links)</p>
+      </div>`,
   },
-  iana: {
-    title: "Example Domains",
-    lines: [
-      "As described in RFC 2606 and RFC 6761, a number of domains",
-      "such as example.com and example.org are maintained for",
-      "documentation purposes.",
-    ],
-    links: [{ n: 1, text: "RFC 2606", target: "example" }],
-    footer: "(1 link — use links)",
+  raw: {
+    shell: "curler --raw example.com",
+    html: `
+      <div class="page-block code-block">
+        <p class="block code-line">&lt;!doctype html&gt;</p>
+        <p class="block code-line">&lt;html&gt;</p>
+        <p class="block code-line">&lt;head&gt;&lt;title&gt;Example Domain&lt;/title&gt;&lt;/head&gt;</p>
+        <p class="block code-line">&lt;body&gt;</p>
+        <p class="block code-line">&lt;div&gt;</p>
+        <p class="block code-line">&lt;h1&gt;Example Domain&lt;/h1&gt;</p>
+        <p class="block code-line">&lt;p&gt;This domain is for use in illustrative examples in documents.&lt;/p&gt;</p>
+        <p class="block code-line">&lt;p&gt;&lt;a href="https://www.iana.org/domains/example"&gt;More information...&lt;/a&gt;&lt;/p&gt;</p>
+        <p class="block code-line">&lt;/div&gt;</p>
+        <p class="block code-line">&lt;/body&gt;</p>
+        <p class="block code-line">&lt;/html&gt;</p>
+      </div>`,
   },
-  spa: {
-    spaWarning: true,
-    title: "My React App",
-    lines: ['<div id="root"></div>'],
-    links: [],
-    footer: "(0 links)",
+  pretty: {
+    shell: "curler --pretty example.com",
+    html: `
+      <div class="page-block code-block">
+        <p class="block code-line">&lt;!doctype html&gt;</p>
+        <p class="block code-line">&lt;html&gt;</p>
+        <p class="block code-line">  &lt;head&gt;</p>
+        <p class="block code-line">    &lt;title&gt;Example Domain&lt;/title&gt;</p>
+        <p class="block code-line">  &lt;/head&gt;</p>
+        <p class="block code-line">  &lt;body&gt;</p>
+        <p class="block code-line">    &lt;div&gt;</p>
+        <p class="block code-line">      &lt;h1&gt;Example Domain&lt;/h1&gt;</p>
+        <p class="block code-line">      &lt;p&gt;</p>
+        <p class="block code-line">        This domain is for use in illustrative examples in documents.</p>
+        <p class="block code-line">      &lt;/p&gt;</p>
+        <p class="block code-line">      &lt;p&gt;</p>
+        <p class="block code-line">        &lt;a href="https://www.iana.org/domains/example"&gt;More information...&lt;/a&gt;</p>
+        <p class="block code-line">      &lt;/p&gt;</p>
+        <p class="block code-line">    &lt;/div&gt;</p>
+        <p class="block code-line">  &lt;/body&gt;</p>
+        <p class="block code-line">&lt;/html&gt;</p>
+      </div>`,
+  },
+  headers: {
+    shell: "curler --headers example.com",
+    html: `
+      <div class="page-block">
+        <p class="block kv"><span class="kv-key">content-type  </span><span class="kv-val">text/html; charset=UTF-8</span></p>
+        <p class="block kv"><span class="kv-key">content-length</span><span class="kv-val">1256</span></p>
+        <p class="block kv"><span class="kv-key">server        </span><span class="kv-val">ECS (nyb/1D2A)</span></p>
+        <p class="block kv"><span class="kv-key">date          </span><span class="kv-val">Wed, 08 Jul 2026 12:00:00 GMT</span></p>
+        <p class="block kv"><span class="kv-key">cache-control </span><span class="kv-val">max-age=86400</span></p>
+      </div>`,
   },
 };
 
-const INSTALL_CMD = "pip install curler-paperback";
-const SPA_WARNING =
-  "This page looks like a JavaScript SPA with little server-rendered content. " +
-  "Try Stagecraft or Blockbuster for full browser rendering.";
-
-let currentPage = "example";
-const history = ["example"];
-
-const typedEl = document.getElementById("typed-command");
-const cursorEl = document.getElementById("cursor");
-const sessionLog = document.getElementById("session-log");
-const replSection = document.getElementById("repl-section");
-const btnGo1 = document.getElementById("btn-go-1");
-const btnBack = document.getElementById("btn-back");
-const copyBtn = document.getElementById("copy-btn");
-const spaDemoBtn = document.getElementById("spa-demo");
-
-function el(tag, className, text) {
-  const node = document.createElement(tag);
-  if (className) node.className = className;
-  if (text != null) node.textContent = text;
-  return node;
+function renderDemo(tabName) {
+  const config = DEMO[tabName];
+  const panel = document.getElementById("demo-output");
+  panel.innerHTML = `
+    <p class="block shell-cmd"><span class="prompt">$</span> ${config.shell}</p>
+    ${config.html}`;
 }
 
-function appendCommand(command) {
-  const line = el("p", "block");
-  line.innerHTML = `<span class="prompt">curler&gt;</span> ${command}`;
-  sessionLog.appendChild(line);
-}
+function initTabs() {
+  const tabs = document.querySelectorAll(".tab");
 
-function appendOutput(text, className) {
-  const line = el("p", "block " + (className || ""));
-  line.textContent = text;
-  sessionLog.appendChild(line);
-}
-
-function appendPage(pageId) {
-  const page = PAGES[pageId];
-  const block = el("div", "page-block");
-
-  if (page.spaWarning) {
-    block.appendChild(el("p", "block warn", SPA_WARNING));
-    block.appendChild(el("p", "block", ""));
-  }
-
-  block.appendChild(el("p", "block h1", "# " + page.title));
-
-  for (const line of page.lines) {
-    block.appendChild(el("p", "block", line));
-  }
-
-  for (const link of page.links) {
-    const p = el("p", "block");
-    const span = el("span", "link");
-    span.textContent = `${link.text} [${link.n}]`;
-    span.addEventListener("click", () => {
-      navigateTo(link.target, { command: `go ${link.n}` });
+  tabs.forEach((tab) => {
+    tab.addEventListener("click", () => {
+      tabs.forEach((t) => {
+        t.classList.remove("active");
+        t.setAttribute("aria-selected", "false");
+      });
+      tab.classList.add("active");
+      tab.setAttribute("aria-selected", "true");
+      renderDemo(tab.dataset.tab);
     });
-    p.appendChild(span);
-    block.appendChild(p);
-  }
+  });
 
-  if (page.footer) {
-    block.appendChild(el("p", "block dim", page.footer));
-  }
-
-  sessionLog.appendChild(block);
-  updateReplButtons();
+  renderDemo("parsed");
 }
 
-function navigateTo(pageId, { command = null } = {}) {
-  if (command) appendCommand(command);
-  if (pageId === currentPage) return;
-
-  history.push(pageId);
-  currentPage = pageId;
-  appendPage(pageId);
-}
-
-function updateReplButtons() {
-  const page = PAGES[currentPage];
-  btnGo1.disabled = !page.links.length;
-  btnBack.disabled = history.length <= 1;
-}
-
-function typeText(text, speed = 65) {
-  return new Promise((resolve) => {
-    let i = 0;
-    typedEl.textContent = "";
-    const tick = () => {
-      if (i < text.length) {
-        typedEl.textContent += text[i++];
-        setTimeout(tick, speed);
-      } else {
-        resolve();
+function initCopyButtons() {
+  document.querySelectorAll(".copy-btn").forEach((btn) => {
+    btn.addEventListener("click", async () => {
+      const text = btn.dataset.copy;
+      try {
+        await navigator.clipboard.writeText(text);
+        btn.textContent = "copied!";
+        btn.classList.add("copied");
+        setTimeout(() => {
+          btn.textContent = "copy";
+          btn.classList.remove("copied");
+        }, 1500);
+      } catch {
+        btn.textContent = "failed";
+        setTimeout(() => {
+          btn.textContent = "copy";
+        }, 1500);
       }
-    };
-    tick();
+    });
   });
 }
 
-function runReplCommand(cmd) {
-  replSection.classList.remove("hidden");
-  appendCommand(cmd);
-
-  if (cmd === "links") {
-    const page = PAGES[currentPage];
-    if (!page.links.length) {
-      appendOutput("(no links)", "dim");
-      return;
-    }
-    for (const link of page.links) {
-      appendOutput(`[${link.n}] ${link.text} — (${link.target})`, "link");
-    }
-    btnGo1.disabled = false;
-    return;
-  }
-
-  if (cmd === "go 1") {
-    const target = PAGES[currentPage].links[0]?.target;
-    if (target) navigateTo(target);
-    return;
-  }
-
-  if (cmd === "back") {
-    if (history.length <= 1) return;
-    history.pop();
-    currentPage = history[history.length - 1];
-    appendPage(currentPage);
-    updateReplButtons();
-  }
-}
-
-document.querySelectorAll("[data-cmd]").forEach((btn) => {
-  btn.addEventListener("click", () => runReplCommand(btn.dataset.cmd));
-});
-
-copyBtn.addEventListener("click", async () => {
-  try {
-    await navigator.clipboard.writeText(INSTALL_CMD);
-    copyBtn.textContent = "copied!";
-    copyBtn.classList.add("copied");
-    setTimeout(() => {
-      copyBtn.textContent = "copy";
-      copyBtn.classList.remove("copied");
-    }, 1500);
-  } catch {
-    copyBtn.textContent = "failed";
-    setTimeout(() => {
-      copyBtn.textContent = "copy";
-    }, 1500);
-  }
-});
-
-spaDemoBtn.addEventListener("click", () => {
-  history.length = 0;
-  history.push("spa");
-  currentPage = "spa";
-  typedEl.textContent = "spa-demo.app";
-  cursorEl.classList.add("hidden");
-  replSection.classList.remove("hidden");
-  appendCommand("spa-demo.app");
-  appendPage("spa");
-});
-
-async function boot() {
-  await typeText("example.com");
-  cursorEl.classList.add("hidden");
-  sessionLog.classList.remove("hidden");
-  replSection.classList.remove("hidden");
-  appendPage("example");
-}
-
-boot();
+initTabs();
+initCopyButtons();
