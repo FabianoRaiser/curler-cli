@@ -27,4 +27,4 @@ Testes usam `unittest.mock` em `subprocess.run` — nunca requisições de rede 
 
 ## Evolução
 
-Se a edição **Paperback** entrar, criar ADR 0002 para BeautifulSoup em módulo separado (`parser.py`), sem alterar `fetcher.py`. Stagecraft/Blockbuster terão ADRs próprios para Playwright/Selenium.
+A edição **Paperback** adicionou BeautifulSoup em `parser.py`, sem alterar `fetcher.py`. A evolução continua curl-nativa (**Hardbound**). Headless browser (Playwright/Selenium) foi **rejeitado** no core — ver [ADR 0002](0002-sem-headless.md).

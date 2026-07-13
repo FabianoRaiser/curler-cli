@@ -11,7 +11,7 @@ from .style import Stylizer, style_text
 
 SPA_WARNING = (
     "This page looks like a JavaScript SPA with little server-rendered content. "
-    "Try Stagecraft or Blockbuster for full browser rendering."
+    "Curler shows what the server sent — client-rendered pages are out of scope."
 )
 
 

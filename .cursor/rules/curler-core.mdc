@@ -7,6 +7,7 @@ alwaysApply: true
 
 - Edição Paperback: `beautifulsoup4` + `lxml` em `pyproject.toml`
 - I/O `curl` apenas em `fetcher.py`; parse em `parser.py`; render em `renderer.py` + `style.py`
+- Filosofia curl-nativa: sem Playwright/Selenium/headless (ADR `docs/decisoes/0002-sem-headless.md`)
 - `FetchResult` / `ParsedPage` são frozen dataclasses; erros tipados (`UrlError`, `FetchError`)
 - Testes com `unittest` + mock; integração HTTP local só em `test_integration.py`
 - Modo Manuscript disponível via `--raw` / `--pretty` (HTML cru)

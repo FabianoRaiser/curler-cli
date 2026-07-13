@@ -1,5 +1,12 @@
 # Changelog
 
+## [Unreleased]
+
+### Changed
+
+- Aviso de SPA: deixa de sugerir Stagecraft/Blockbuster; CSR puro fica fora de escopo (curl-nativo)
+- Roadmap e docs: próxima edição é Hardbound (sessão curl); headless rejeitado (ADR 0002)
+
 ## [0.2.2] - 2026-07-06
 
 ### Fixed

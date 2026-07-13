@@ -170,8 +170,8 @@ Commit the updated `CHANGELOG.md` before tagging. On tag push, the [release work
 
 ## Roadmap
 
-**Stagecraft** (next edition) will add headless browser rendering for JavaScript-heavy pages. See [`docs/curler-guide.md`](docs/curler-guide.md) for the full edition roadmap.
+**Hardbound** (next edition) deepens curl — custom request headers, POST body, cookies, save, timeout/User-Agent — without a headless browser. See [`docs/curler-guide.md`](docs/curler-guide.md) for the edition roadmap.
 
 ## Limitations
 
-Paperback does not execute JavaScript. Single-page apps often return an empty shell — Curler detects this and warns you. It does not submit forms, send custom headers, or save responses to files. Those capabilities belong to later Curler editions.
+Paperback does not execute JavaScript. Client-rendered SPAs often return an empty shell — Curler detects this and warns you; that case stays out of scope (curl shows the HTTP document, not a JS runtime). It does not yet submit forms, send custom request headers, or save responses to files — those belong to Hardbound.

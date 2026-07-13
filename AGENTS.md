@@ -1,6 +1,6 @@
 # Curler Paperback
 
-CLI que busca URLs via `curl`, parseia HTML com BeautifulSoup e imprime páginas legíveis no terminal. Edição **Paperback** (v0.2): links inline, navegação REPL, cores ANSI.
+CLI que busca URLs via `curl`, parseia HTML com BeautifulSoup e imprime páginas legíveis no terminal. Edição **Paperback** (v0.2): links inline, navegação REPL, cores ANSI. Próxima edição: **Hardbound** (sessão curl). Filosofia: **100% curl-nativo** — sem Playwright/Selenium ([ADR 0002](docs/decisoes/0002-sem-headless.md)).
 
 ## Stack
 

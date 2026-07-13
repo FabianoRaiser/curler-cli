@@ -4,18 +4,19 @@
 
 O Curler é um navegador CLI construído em cima do `curl`. Sem GPU, sem engine JavaScript, sem 300MB de Chromium — só uma conexão TCP, um parser de HTML e a audácia de chamar isso de navegador.
 
-O projeto vem em quatro edições. O **Manuscript** entrega HTML cru. O **Paperback** (v0.2 — **atual**) parseia a marcação em páginas legíveis com navegação no REPL. O **Stagecraft** e o **Blockbuster** são edições futuras com browser headless.
+O projeto vem em edições **sempre em cima do curl do sistema** — sem Playwright, sem Selenium, sem Chromium. O **Manuscript** entrega HTML cru. O **Paperback** (v0.2 — **atual**) parseia a marcação em páginas legíveis com navegação no REPL. O **Hardbound** (próxima) aprofunda a sessão HTTP via flags do curl.
 
 ---
 
 ## Edições
 
-| Edição | Tecnologia | Peso | Funciona em SPAs? |
+| Edição | Tecnologia | Peso | SPAs client-only? |
 |---|---|---|---|
 | **Manuscript** | curl puro | ~200KB | Não — HTML cru |
 | **Paperback** | curl + BeautifulSoup | ~15MB | Não — avisa o usuário |
-| **Stagecraft** | curl + Playwright headless | ~300MB | Parcialmente |
-| **Blockbuster** | curl + Selenium + Chrome | ~500MB+ | Sim |
+| **Hardbound** | curl (headers, POST, cookies, save, …) | ~15MB | Não — fora de escopo |
+
+Filosofia: o Curler lê o **documento HTTP** que o servidor envia. Renderizar SPA client-side exige motor JS e desvirtua o produto — ver [ADR 0002](decisoes/0002-sem-headless.md).
 
 ---
 
@@ -150,7 +151,7 @@ tests/
 Wikipedia, blogs, documentação, portais com **server-side rendering**.
 
 ### SPAs e Framer
-SPAs (React/Vue) costumam retornar `<div id="root"></div>` vazio — o Curler avisa. Sites **Framer** podem ter HTML verboso e texto duplicado; comentários SSR (`<!--$-->`) são ignorados desde v0.2.
+SPAs client-only (React/Vue com shell vazio) costumam retornar `<div id="root"></div>` — o Curler avisa e **não** tenta executar JavaScript. Sites com SSR/HTML no primeiro response funcionam bem. Sites **Framer** podem ter HTML verboso e texto duplicado; comentários SSR (`<!--$-->`) são ignorados desde v0.2.
 
 ### Redirects
 O curl segue redirects com `-L`. O histórico REPL guarda cada página visitada com body cacheado.
@@ -164,8 +165,10 @@ O fetcher detecta charset em `Content-Type` e `<meta charset>`, com fallback UTF
 
 - [x] **Manuscript** v0.1 — curl puro, HTML bruto
 - [x] **Paperback** v0.2 — parser, renderer, REPL, histórico, cores
-- [ ] Suporte a `POST` com body customizado
-- [ ] Headers customizados (`-H`)
-- [ ] Salvar resposta (`save <filename>`)
-- [ ] **Stagecraft** — Playwright headless
-- [ ] **Blockbuster** — Selenium
+- [ ] **Hardbound** v0.3 — sessão curl:
+  - [ ] Headers de request (`-H`)
+  - [ ] POST / body (`-X` / `--data`)
+  - [ ] Cookies / cookie-jar (`-b` / `-c`)
+  - [ ] Timeout e User-Agent
+  - [ ] Salvar resposta (`save` / `--output`)
+- [x] ~~Stagecraft / Blockbuster (headless)~~ — **rejeitados** ([ADR 0002](decisoes/0002-sem-headless.md))
