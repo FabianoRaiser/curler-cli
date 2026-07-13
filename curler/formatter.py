@@ -2,10 +2,9 @@
 
 from __future__ import annotations
 
+import textwrap
 from html import escape
 from html.parser import HTMLParser
-import textwrap
-
 
 VOID_ELEMENTS = {
     "area",

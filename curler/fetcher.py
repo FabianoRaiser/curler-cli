@@ -2,10 +2,10 @@
 
 from __future__ import annotations
 
-from dataclasses import dataclass
 import re
 import shutil
 import subprocess
+from dataclasses import dataclass
 
 
 class FetchError(RuntimeError):
