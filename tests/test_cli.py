@@ -122,6 +122,54 @@ class CliTest(unittest.TestCase):
         self.assertEqual(code, 1)
         self.assertIn("Only http:// and https:// URLs are supported.", error.getvalue())
 
+    def test_header_flag_is_passed_to_fetch(self):
+        with patch(
+            "curler.cli.fetch",
+            return_value=FetchResult(
+                url="https://example.com",
+                headers="HTTP/2 200\n\n",
+                body=SIMPLE_HTML,
+            ),
+        ) as mock_fetch:
+            output = StringIO()
+            code = curler.cli.main(
+                ["-H", "Accept: application/json", "example.com"],
+                output=output,
+                error=StringIO(),
+            )
+
+        self.assertEqual(code, 0)
+        mock_fetch.assert_called_once_with(
+            "https://example.com",
+            headers=["Accept: application/json"],
+        )
+    
+    def test_multiple_header_flags_are_passed_to_fetch(self):
+        with patch(
+            "curler.cli.fetch",
+            return_value=FetchResult(
+                url="https://example.com",
+                headers="HTTP/2 200\n\n",
+                body=SIMPLE_HTML,
+            ),
+        ) as mock_fetch:
+            output = StringIO()
+            code = curler.cli.main(
+                [
+                    "-H", "Accept: application/json", 
+                    "-H", "X-Debug: 1", 
+                    "example.com"
+                ],
+                output=output,
+                error=StringIO(),
+            )
+
+        self.assertEqual(code, 0)
+        mock_fetch.assert_called_once_with(
+            "https://example.com",
+            headers=["Accept: application/json", "X-Debug: 1"],
+        )
+
 
 if __name__ == "__main__":
     unittest.main()

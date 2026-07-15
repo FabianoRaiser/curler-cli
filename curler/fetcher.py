@@ -28,18 +28,13 @@ CHARSET_ALIASES = {
 }
 
 
-def build_curl_command(url: str) -> list[str]:
+def build_curl_command(url: str, headers: list[str] | None = None) -> list[str]:
     """Build the curl command used by Manuscript."""
-    return [
-        "curl",
-        "-L",
-        "-sS",
-        "-D",
-        "-",
-        "-o",
-        "-",
-        url,
-    ]
+    command = ["curl", "-L", "-sS", "-D", "-", "-o", "-"]
+    for header in headers or []:
+        command.extend(["-H", header])
+    command.append(url)
+    return command
 
 
 def normalize_charset(name: str) -> str:
@@ -115,12 +110,12 @@ def split_headers_and_body(output: bytes) -> tuple[str, str]:
     return headers, decode_body(body, charset=charset)
 
 
-def fetch(url: str) -> FetchResult:
+def fetch(url: str, headers: list[str] | None = None) -> FetchResult:
     """Fetch a URL with curl, returning headers and raw body."""
     if shutil.which("curl") is None:
         raise FetchError("curl was not found. Install curl and try again.")
 
-    command = build_curl_command(url)
+    command = build_curl_command(url, headers=headers)
     try:
         completed = subprocess.run(
             command,
@@ -134,5 +129,5 @@ def fetch(url: str) -> FetchResult:
         message = decode_body(completed.stderr).strip() or "curl request failed."
         raise FetchError(message)
 
-    headers, body = split_headers_and_body(completed.stdout)
-    return FetchResult(url=url, headers=headers, body=body)
+    response_headers, body = split_headers_and_body(completed.stdout)
+    return FetchResult(url=url, headers=response_headers, body=body)

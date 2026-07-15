@@ -53,7 +53,7 @@ class FetcherTest(unittest.TestCase):
             b"<html>caf\xc3\xa9</html>"
         )
 
-        headers, body = split_headers_and_body(output)
+        _headers, body = split_headers_and_body(output)
 
         self.assertEqual(body, "<html>café</html>")
 
@@ -124,6 +124,26 @@ class FetcherTest(unittest.TestCase):
             with patch("curler.fetcher.subprocess.run", return_value=completed):
                 with self.assertRaisesRegex(FetchError, "Could not resolve host"):
                     fetch("https://missing.example")
+
+    def test_fetch_includes_headers(self):
+        self.assertEqual(
+            build_curl_command(
+                "https://example.com",
+                headers=["Accept: application/json", "X-Debug: 1"],
+            ),
+            [
+                "curl",
+                "-L",
+                "-sS",
+                "-D",
+                "-",
+                "-o",
+                "-",
+                "-H", "Accept: application/json",
+                "-H", "X-Debug: 1",
+                "https://example.com",
+            ]
+        )
 
 
 if __name__ == "__main__":

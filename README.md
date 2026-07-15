@@ -72,6 +72,14 @@ curler --no-color example.com
 
 Also respects the `NO_COLOR` environment variable.
 
+Send custom request headers (repeatable; curl-style `-H`):
+
+```bash
+curler -H 'Accept: application/json' example.com
+curler -H 'Accept: application/json' -H 'X-Debug: 1' example.com
+```
+`--header`/`-H` adds headers to the request. Do not confuse with `--headers`, which prints response headers.
+
 Print only response headers:
 
 ```bash
@@ -133,6 +141,7 @@ After installing locally, run:
 ```bash
 curler example.com
 curler --raw example.com
+curler -H 'Accept: application/json' example.com
 curler --headers example.com
 curler --pretty example.com
 curler
@@ -174,4 +183,4 @@ Commit the updated `CHANGELOG.md` before tagging. On tag push, the [release work
 
 ## Limitations
 
-Paperback does not execute JavaScript. Client-rendered SPAs often return an empty shell — Curler detects this and warns you; that case stays out of scope (curl shows the HTTP document, not a JS runtime). It does not yet submit forms, send custom request headers, or save responses to files — those belong to Hardbound.
+Paperback does not execute JavaScript. Client-rendered SPAs often return an empty shell — Curler detects this and warns you; that case stays out of scope (curl shows the HTTP document, not a JS runtime). It does not yet submit forms or save responses to files — those belong to Hardbound. Custom request headers (`-H` / `--header`) are already supported.

@@ -50,6 +50,14 @@ def build_parser() -> argparse.ArgumentParser:
         action="version",
         version=f"curler {__version__}",
     )
+    parser.add_argument(
+        "-H",
+        "--header",
+        action="append",
+        metavar="HEADER",
+        help="add a request header (Name: value); repeatable "
+             "Not to be confused with --headers (print response headers)",
+    )
     return parser
 
 
@@ -72,7 +80,7 @@ def main(
 
     try:
         url = normalize_url(args.url)
-        result = fetch(url)
+        result = fetch(url, headers=args.header)
     except (UrlError, FetchError) as exc:
         print(f"curler: {exc}", file=error)
         return 1
