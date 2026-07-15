@@ -28,11 +28,20 @@ CHARSET_ALIASES = {
 }
 
 
-def build_curl_command(url: str, headers: list[str] | None = None) -> list[str]:
+def build_curl_command(
+    url: str,
+    headers: list[str] | None = None,
+    cookie: str | None = None,
+    cookie_jar: str | None = None
+) -> list[str]:
     """Build the curl command used by Manuscript."""
     command = ["curl", "-L", "-sS", "-D", "-", "-o", "-"]
     for header in headers or []:
         command.extend(["-H", header])
+    if cookie is not None:
+        command.extend(["-b", cookie])
+    if cookie_jar is not None:
+        command.extend(["-c", cookie_jar])
     command.append(url)
     return command
 
@@ -110,12 +119,19 @@ def split_headers_and_body(output: bytes) -> tuple[str, str]:
     return headers, decode_body(body, charset=charset)
 
 
-def fetch(url: str, headers: list[str] | None = None) -> FetchResult:
+def fetch(
+    url: str,
+    headers: list[str] | None = None,
+    cookie: str | None = None,
+    cookie_jar: str | None = None
+) -> FetchResult:
     """Fetch a URL with curl, returning headers and raw body."""
     if shutil.which("curl") is None:
         raise FetchError("curl was not found. Install curl and try again.")
 
-    command = build_curl_command(url, headers=headers)
+    command = build_curl_command(
+        url, headers=headers, cookie=cookie, cookie_jar=cookie_jar
+    )
     try:
         completed = subprocess.run(
             command,

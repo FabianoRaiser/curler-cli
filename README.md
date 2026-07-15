@@ -80,6 +80,21 @@ curler -H 'Accept: application/json' -H 'X-Debug: 1' example.com
 ```
 `--header`/`-H` adds headers to the request. Do not confuse with `--headers`, which prints response headers.
 
+Send or save cookies (curl-style `-b`/`-c`). Cookies are stored only in the file you pass - there is no default jar yet:
+
+```bash
+# write cookies received from the response
+curler --cookie-jar ./jar.txt example.com
+
+# send cookies from a file (or NAME=VALUE string)
+curler --cookie ./jar.txt example.com
+curler --cookie 'session=abc123' example.com
+
+# both: reuse and update the same jar across requests
+curler --cookie ./jar.txt --cookie-jar ./jar.txt example.com
+```
+`-b`/`--cookie` sends cookies; `-c`/`--cookie-jar` writes them. Use the same file for both when you want a session between fetches.
+
 Print only response headers:
 
 ```bash
@@ -144,6 +159,8 @@ curler --raw example.com
 curler -H 'Accept: application/json' example.com
 curler --headers example.com
 curler --pretty example.com
+curler --cookie-jar ./jar.txt example.com
+curler --cookie ./jar.txt example.com
 curler
 ```
 
@@ -179,8 +196,8 @@ Commit the updated `CHANGELOG.md` before tagging. On tag push, the [release work
 
 ## Roadmap
 
-**Hardbound** (next edition) deepens curl — custom request headers, POST body, cookies, save, timeout/User-Agent — without a headless browser. See [`docs/curler-guide.md`](docs/curler-guide.md) for the edition roadmap.
+**Hardbound** (next edition) deepens curl — custom request headers, POST body, save, timeout/User-Agent — without a headless browser. See [`docs/curler-guide.md`](docs/curler-guide.md) for the edition roadmap.
 
 ## Limitations
 
-Paperback does not execute JavaScript. Client-rendered SPAs often return an empty shell — Curler detects this and warns you; that case stays out of scope (curl shows the HTTP document, not a JS runtime). It does not yet submit forms or save responses to files — those belong to Hardbound. Custom request headers (`-H` / `--header`) are already supported.
+Paperback does not execute JavaScript. Client-rendered SPAs often return an empty shell — Curler detects this and warns you; that case stays out of scope (curl shows the HTTP document, not a JS runtime). It does not yet submit forms or save responses to files — those belong to Hardbound. Custom request headers (`-H` / `--header`) and cookies (`-b`/`--cookie`, `-c`/`--cookie-jar`) are already supported.

@@ -142,6 +142,8 @@ class CliTest(unittest.TestCase):
         mock_fetch.assert_called_once_with(
             "https://example.com",
             headers=["Accept: application/json"],
+            cookie=None,
+            cookie_jar=None,
         )
     
     def test_multiple_header_flags_are_passed_to_fetch(self):
@@ -168,6 +170,35 @@ class CliTest(unittest.TestCase):
         mock_fetch.assert_called_once_with(
             "https://example.com",
             headers=["Accept: application/json", "X-Debug: 1"],
+            cookie=None,
+            cookie_jar=None,
+        )
+
+    def test_cookie_flags_are_passed_to_fetch(self):
+        with patch(
+            "curler.cli.fetch",
+            return_value=FetchResult(
+                url="https://example.com",
+                headers="HTTP/2 200\n\n",
+                body=SIMPLE_HTML,
+            ),
+        ) as mock_fetch:
+            code = curler.cli.main(
+                [
+                    "--cookie", "jar.txt",
+                    "--cookie-jar", "jar.txt",
+                    "example.com"
+                ],
+                output=StringIO(),
+                error=StringIO(),
+            )
+
+        self.assertEqual(code, 0)
+        mock_fetch.assert_called_once_with(
+            "https://example.com",
+            headers=None,
+            cookie="jar.txt",
+            cookie_jar="jar.txt",
         )
 
 

@@ -58,6 +58,18 @@ def build_parser() -> argparse.ArgumentParser:
         help="add a request header (Name: value); repeatable "
              "Not to be confused with --headers (print response headers)",
     )
+    parser.add_argument(
+        "-b",
+        "--cookie",
+        metavar="DATA|FILE",
+        help="send cookies from string (NAME=VALUE) or file (curl -b)",
+    )
+    parser.add_argument(
+        "-c",
+        "--cookie-jar",
+        metavar="FILE",
+        help="write cookies to file after the request (curl -c)",
+    )
     return parser
 
 
@@ -80,7 +92,12 @@ def main(
 
     try:
         url = normalize_url(args.url)
-        result = fetch(url, headers=args.header)
+        result = fetch(
+            url, 
+            headers=args.header,
+            cookie=args.cookie,
+            cookie_jar=args.cookie_jar,
+        )
     except (UrlError, FetchError) as exc:
         print(f"curler: {exc}", file=error)
         return 1

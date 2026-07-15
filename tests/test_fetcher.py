@@ -145,6 +145,65 @@ class FetcherTest(unittest.TestCase):
             ]
         )
 
+    def test_build_curl_command_includes_cookie_flags(self):
+        self.assertEqual(
+            build_curl_command(
+                "https://example.com",
+                cookie="jar.txt",
+                cookie_jar="jar.txt",
+            ),
+            [
+                "curl",
+                "-L",
+                "-sS",
+                "-D",
+                "-",
+                "-o",
+                "-",
+                "-b", "jar.txt",
+                "-c", "jar.txt",
+                "https://example.com",
+            ]
+        )
+
+    def test_build_curl_command_includes_cookie_flag_alone(self):
+        self.assertEqual(
+            build_curl_command(
+                "https://example.com",
+                cookie="SESSION=1234567890",
+            ),
+            [
+                "curl",
+                "-L",
+                "-sS",
+                "-D",
+                "-",
+                "-o",
+                "-",
+                "-b", "SESSION=1234567890",
+                "https://example.com",
+            ]
+        )
+
+    def test_build_curl_command_includes_cookie_jar_flag_alone(self):
+        self.assertEqual(
+            build_curl_command(
+                "https://example.com",
+                cookie_jar="jar.txt",
+            ),
+            [
+                "curl",
+                "-L",
+                "-sS",
+                "-D",
+                "-",
+                "-o",
+                "-",
+                "-c", "jar.txt",
+                "https://example.com",
+            ]
+        )
+
 
 if __name__ == "__main__":
     unittest.main()
