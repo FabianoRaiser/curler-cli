@@ -130,6 +130,8 @@ curler> forward
 curler> headers
 curler> raw
 curler> pretty
+curler> cookies
+curler> clear-cookies
 curler> help
 curler> quit
 ```

@@ -273,6 +273,66 @@ class ReplTest(unittest.TestCase):
         self.assertIn("No links found.", output.getvalue())
         self.assertEqual(error.getvalue(), "")
 
+    def test_repl_cookies_and_clear_cookies(self):
+        import tempfile
+        from pathlib import Path
+
+        with tempfile.NamedTemporaryFile(mode="w", suffix=".txt", delete=False) as tmp:
+            tmp.write("# Netscape cookie file\nexample.com\tTRUE\t/\tFALSE\t0\tsession\tabc\n")
+            jar = tmp.name
+
+        commands = iter(["cookies", "clear-cookies", "cookies", "quit"])
+
+        def fake_input(prompt):
+            return next(commands)
+
+        def fake_fetch(url):
+            return FetchResult(
+                url="https://example.com",
+                headers="HTTP/2 200\n\n",
+                body=HOME_HTML,
+            )
+
+        output = StringIO()
+        try:
+            code = run_repl(
+                input_func=fake_input,
+                output=output,
+                error=StringIO(),
+                fetch_func=fake_fetch,
+                cookie_jar=jar,
+            )
+        finally:
+            Path(jar).unlink(missing_ok=True)
+
+        self.assertEqual(code, 0)
+        text = output.getvalue()
+        self.assertIn("session", text)
+        self.assertIn("Cookies cleared.", text)
+        self.assertIn("No cookies.", text)
+
+
+    def test_repl_default_fetch_uses_cookie_jar(self):
+        from unittest.mock import patch
+        commands = iter(["example.com", "quit"])
+        with patch("curler.repl.fetch") as mock_fetch:
+            mock_fetch.return_value = FetchResult(
+                url="https://example.com",
+                headers="HTTP/2 200\n\n",
+                body=HOME_HTML,
+            )
+            run_repl(
+                input_func=lambda p: next(commands),
+                output=StringIO(),
+                error=StringIO(),
+                cookie_jar="/tmp/curler-test-jar.txt",
+            )
+        mock_fetch.assert_called_once_with(
+            "https://example.com",
+            cookie="/tmp/curler-test-jar.txt",
+            cookie_jar="/tmp/curler-test-jar.txt",
+        )
+
 
 if __name__ == "__main__":
     unittest.main()
