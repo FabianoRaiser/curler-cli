@@ -166,9 +166,9 @@ O fetcher detecta charset em `Content-Type` e `<meta charset>`, com fallback UTF
 - [x] **Manuscript** v0.1 — curl puro, HTML bruto
 - [x] **Paperback** v0.2 — parser, renderer, REPL, histórico, cores
 - [ ] **Hardbound** v0.3 — sessão curl:
-  - [ ] Headers de request (`-H`)
+  - [x] Headers de request (`-H`)
   - [ ] POST / body (`-X` / `--data`)
-  - [ ] Cookies / cookie-jar (`-b` / `-c`)
+  - [x] Cookies / cookie-jar (`-b` / `-c`)
   - [ ] Timeout e User-Agent
   - [ ] Salvar resposta (`save` / `--output`)
 - [x] ~~Stagecraft / Blockbuster (headless)~~ — **rejeitados** ([ADR 0002](decisoes/0002-sem-headless.md))

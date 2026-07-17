@@ -95,6 +95,13 @@ curler --cookie ./jar.txt --cookie-jar ./jar.txt example.com
 ```
 `-b`/`--cookie` sends cookies; `-c`/`--cookie-jar` writes them. Use the same file for both when you want a session between fetches.
 
+Shortcut to read and write the same cookie file:
+
+```bash
+curler --jar ./jar.txt example.com
+```
+`--jar` is equivalent to `--cookie FILE --cookie-jar FILE`. Do not combine it with `-b`/`-c`
+
 Print only response headers:
 
 ```bash

@@ -70,6 +70,11 @@ def build_parser() -> argparse.ArgumentParser:
         metavar="FILE",
         help="write cookies to file after the request (curl -c)",
     )
+    parser.add_argument(
+        "--jar",
+        metavar="FILE",
+        help="read and write cookies using the same file (-b and -c)",
+    )
     return parser
 
 
@@ -92,11 +97,21 @@ def main(
 
     try:
         url = normalize_url(args.url)
+
+        if args.jar and (args.cookie is not None or args.cookie_jar is not None):
+            parser.error("--jar cannot be used with --cookie or --cookie-jar")
+
+        cookie = args.cookie
+        cookie_jar = args.cookie_jar
+        if args.jar is not None:
+            cookie = args.jar
+            cookie_jar = args.jar
+
         result = fetch(
             url, 
             headers=args.header,
-            cookie=args.cookie,
-            cookie_jar=args.cookie_jar,
+            cookie=cookie,
+            cookie_jar=cookie_jar,
         )
     except (UrlError, FetchError) as exc:
         print(f"curler: {exc}", file=error)

@@ -202,5 +202,34 @@ class CliTest(unittest.TestCase):
         )
 
 
+    def test_jar_flag_sets_cookie_and_cookie_jar(self):
+        with patch("curler.cli.fetch", return_value=FetchResult(
+            url="https://example.com",
+            headers="HTTP/2 200\n\n",
+            body=SIMPLE_HTML,
+        )) as mock_fetch:
+            code = curler.cli.main(
+                ["--jar", "jar.txt", "example.com"],
+                output=StringIO(),
+                error=StringIO(),
+            )
+
+        self.assertEqual(code, 0)
+        mock_fetch.assert_called_once_with(
+            "https://example.com",
+            headers=None,
+            cookie="jar.txt",
+            cookie_jar="jar.txt",
+        )
+
+    def test_jar_conflicts_with_cookie_flags(self):
+        with self.assertRaises(SystemExit):
+            curler.cli.main(
+                ["--jar", "a.txt", "--cookie", "b.txt", "example.com"],
+                output=StringIO(),
+                error=StringIO(),
+            )
+
+
 if __name__ == "__main__":
     unittest.main()
